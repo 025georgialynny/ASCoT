@@ -1,6 +1,0 @@
-{
-    "new_plate": "build_plate",
-    "build_plate": "design_plate",
-    "design_plate": "submit_plate",
-    "submit_plate": "review_plate"
-}
