@@ -60,11 +60,6 @@ Start the server
 
 Access on browser at https://localhost:5000. Note the default login (username/pw) is root/root on install. 
 
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
-
-
 ## File Tree
 ```
 .
@@ -132,3 +127,8 @@ Access on browser at https://localhost:5000. Note the default login (username/pw
 │   └── views.py - Main Flask File
 
 ```
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
