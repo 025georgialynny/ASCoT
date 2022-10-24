@@ -68,7 +68,7 @@ Access on browser at https://localhost:5000. Note the default login (username/pw
 ## File Tree
 ```
 .
-├── config_default.py \t\t - Flask Configuration
+├── config_default.py - Flask Configuration
 ├── flaskrun.sh - Run Application
 ├── install.sh - Install Application
 ├── make_exe.sh - Create Executable from PyInstaller
