@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class = row>
+	<div class = col-md-12>
+		<center><h1>Welcome {{current_user.username}}</h1></center>
+	</div>
+</div>
+
+<div class="container">
+	<div class = row><div class = col-md-12>
+	<form class="form-signin" method= "POST" action ="/user_mgmt">
+		
+		{{ userform.hidden_tag()}}
+		<h2 class="form-signin-heading">All Users</h2>
+		<div>
+			<table class = "table">
+				<tr>
+					<th> Username </th>
+					<th> Name </th>
+					<th> Change Password </th>
+					<th> Role </th>
+				</tr>
+				{% for member in userform.users %}
+				<tr>
+					{{member.hidden_tag()}}
+					{{ member.oldusername }}
+					<td>{{ member.username }}</td>
+					<td>{{ member.firstname }}{{ member.lastname }}</td>
+					<td>{{ member.password }}{{ member.confpassword }}</td>
+					<td>{{ member.role }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Change Users</button>
+	  </form>
+	</div>
+	</div>
+	
+</div>
+
+{%endblock%}

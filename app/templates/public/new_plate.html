@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style = "padding: 25px">
+	<button id = ></button>
+<form action = "/new_plate" method = "POST"  class = "needs-validation">
+	<div class = "row">
+		<div class = "col form-group" >
+			<label for = "plate_id" class = "form-label">Plate ID</label>
+			<input type = "text" id = "plate_id" name = "plate_id" class="form-control" placeholder="Plate ID" required>
+		</div>
+		<div class = "col form-group" >
+			<label for = "plate_rows" class = "form-label">Plate Rows</label>
+			<input type = "number" id =  "plate_rows" name = "plate_rows" class="form-control" placeholder="8" value = 8>
+		</div>
+		<div class = "col form-group" >
+			<label for = "plate_columns" class = "form-label">Plate Columns</label>
+			<input type = "number" id ="plate_columns" name ="plate_columns" class="form-control" placeholder="12" value = 12>
+		</div>
+	</div>
+	<div class = "row" style = "padding-top: 20px">
+		<div class = "col d-flex justify-content-center">
+			<button type="submit" class="btn btn-primary mb-2">Create Plate</button>
+		</div>
+	</div>
+</form>
+</div>
+{%endblock%}

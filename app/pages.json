@@ -1,0 +1,57 @@
+{
+    "pages": ["landing", "variant", "plate_overview", "plate_report", "sequenced_plates", 
+        "primer_inventory", "unassigned_plates", "pending_processing", "pending_approval",
+        "var_unassigned", "choose_plate", "build_plate", "organize_plate"],
+    "choose_plate": {
+        "tables": ["Choose Plate"]
+    },
+    "build_plate": {
+        "tables": ["Build Plate"]
+    },
+    "design_plate": {
+        "tables": ["Design Plate"]
+    },
+    "unassigned_plates":{
+        "tables": ["Unassigned Plates"]
+    },
+    "pending_processing":{
+        "tables": ["Pending Processing"]
+    },
+    "pending_approval":{
+        "tables": ["Pending Approval"]
+    },
+    "var_unassigned":{
+        "tables": ["Pending Assignement to Plate"]
+    },
+    "organize_plate": {
+      "tables": ["Organize Plate", "Primer List", "Plate Primers", "Plate Report"]  
+    },
+    "landing":
+    {
+        "tables": ["Variant Overview"],
+        "old_tables": ["Unassigned Plates", "Pending Processing", "Pending Approval", "Pending Assignment to Plate"]
+    },
+    "variant": 
+    {
+        "tables": ["Variant Overview"]
+    },
+    "plate_overview": 
+    {
+        "tables": ["Plate Overview"]
+    },
+    "plate_report": 
+    {
+        "tables": ["Plate Report", "Controls", "Assigned Samples", "Unassigned Samples","Primer List", "Organize Plate"]
+    }, 
+    "sequenced_plate":
+    {
+        "tables": ["Plate Report", "Controls", "Sequenced Samples", "Organize Plate"]
+    }, 
+    "primer_inventory": 
+    {
+        "tables": ["Primer Inventory"]
+    }, 
+    "primer_list":  {
+        "tables": ["Primer List"]
+    }
+}

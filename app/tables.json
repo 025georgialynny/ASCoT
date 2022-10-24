@@ -1,0 +1,1105 @@
+{
+    "Unassigned Plates": {
+        "columns": ["plate_overview.plate_id", "plate_overview.plate_rows", "plate_overview.plate_columns", "none.assign"],
+        "dropdown": {
+            "Samples": ["plate_wells.sample_name", "plate_wells.well_row", "plate_wells.well_column"]
+        }
+    },
+    "Pending Processing": {
+        "columns": ["plate_overview.plate_id", "plate_overview.plate_rows", "plate_overview.plate_columns", "none.primer", "none.primer_status", "none.timestamp", "plate_overview.assignee"],
+        "dropdown": {
+            "Samples": ["plate_wells.sample_name", "plate_wells.well_row", "plate_wells.well_column"]
+        }
+    },
+    "Pending Approval": {
+        "columns": ["plate_overview.plate_id", "none.timestamp", "none.approval", "plate_overview.assignee"],
+        "dropdown": {
+
+        }
+    },
+    "Pending Assignment to Plate": {
+        "columns": ["samples_overview.sample_name", "samples_overview.rsid", "samples_overview.gene", "none.timestamp", "samples_overview.eligibility"],
+        "dropdown": {
+
+        }
+    },
+    "Variant Overview old": {
+        "columns": ["samples_overview.sample_name", "none.select_sample", "samples_overview.mrn", "samples_overview.btid", "samples_overview.gene", "samples_overview.hg38", "samples_overview.rsid", "none.status", "none.plate_id", "samples_overview.eligibility", "none.assignee"],
+        "dropdown": {
+            "Status": ["signed_out", "confirmed", "approval"],
+            "Target Amplification Info": ["target_region", "primer"], 
+            "Patient Info": ["sex", "race", "ethnicity"]
+        }
+    },
+    "Variant Overview": {
+        "args": {
+            "length": "len(self.samples_overview)",
+            "main_file": "samples_overview"
+        },
+        "columns": {
+            "select_sample": {
+                "pretty_name": "Select",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            }, 
+            "sample_name": {
+                "pretty_name": "",
+                "hidden": "true",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "btid": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "mrn": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "rsid": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "gene": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "cdot": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "pdot": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "clinvar": {
+                "pretty_name": "",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "NM": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "CLNHGVS": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "timestamp": {
+                "pretty_name": "Time Uploaded",
+                "storage_file": "logs",
+                "type": "variable",
+                "unique": "True",
+                "args": {
+                    "query": "(self.logs.action=='uploaded')&(self.logs.sample_name=='{sample_name}')",
+                    "action": "datetime.datetime.fromtimestamp(int([max(list({timestamp}))if self.iterable({timestamp}) else {timestamp}][0]))"
+                }
+            },
+            "eligibility": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "comment": {
+                "pretty_name": "",
+                "storage_file": "logs",
+                "type": "variable",
+                "unique": "True",
+                "args": {
+                    "query": "(self.logs.action=='status')&(self.logs.sample_name=='{sample_name}')",
+                    "columns": ["user", "comment"]
+                }
+            },
+            "plate_id": {
+                "pretty_name": "",
+                "storage_file": "plate_wells",
+                "type": "variable",
+                "unique": "True",
+                "args": {
+                    "query": "self.plate_wells.sample_name=='{sample_name}'"
+                }
+            }
+        },
+        "dropdown": {
+            "Status": {
+                "args": {
+                    "length": "len(self.samples_overview[self.samples_overview.sample_name == '{sample_name}'])",
+                    "main_file": "samples_overview",
+                    "subset_file": "self.samples_overview.sample_name == '{sample_name}'"
+                },
+                "columns": {
+                    "signed_out": {
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "editable",
+                        "unique": "True",
+                        "args": {
+                        }
+                    }, 
+                    "confirmed": {
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "editable",
+                        "unique": "True",
+                        "args": {
+                        }
+                    }, 
+                    "approval":{
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "editable",
+                        "unique": "True",
+                        "args": {
+                        }
+                    }
+                }
+            },
+            "Patient Info": {
+                "args": {
+                    "length": "len(self.samples_overview[self.samples_overview.sample_name == '{sample_name}'])",
+                    "main_file": "samples_overview",
+                    "subset_file": "self.samples_overview.sample_name == '{sample_name}'"
+                },
+                "columns": {
+                    "sex": {
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "static",
+                        "unique": "True",
+                        "args": {
+                        }
+                    }, 
+                    "race": {
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "static",
+                        "unique": "True",
+                        "args": {
+                        }
+                    }, 
+                    "ethnicity": {
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "static",
+                        "unique": "True",
+                        "args": {
+                        }
+                    }
+                }
+            }, 
+            "Other Info": {
+                "args": {
+                    "length": "len(self.samples_overview[self.samples_overview.sample_name == '{sample_name}'])",
+                    "main_file": "samples_overview",
+                    "subset_file": "self.samples_overview.sample_name == '{sample_name}'"
+                },
+                "columns": {
+
+            "hg38": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "flow_cell_id": {
+                "pretty_name": "Flow Cell ID",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "sequencing_date": {
+                "pretty_name": "Sequencing Date",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "RackID": {
+                "pretty_name": "Rack ID",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "ship_date": {
+                "pretty_name": "Ship Date",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            }
+                }
+            }
+        }
+    },
+    "Build Plate": {
+        "args": {
+            "title": "Add/Remove Samples From Plate: {plate_id}",
+            "length": "len(self.samples_overview)",
+            "main_file": "samples_overview",
+            "form_submit_args": "plate_id={plate_id}"
+        },
+        "columns": {
+            "sample_name": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "hidden": "",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "select_sample": {
+                "pretty_name": "",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                    "selected": "'{sample_name}' in list(self.plate_wells.sample_name[(self.plate_wells.plate_id=='{plate_id}')])"
+                }
+            }, 
+            "rsid": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "gene": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "timestamp": {
+                "pretty_name": "Time Uploaded",
+                "storage_file": "logs",
+                "type": "variable",
+                "unique": "True",
+                "args": {
+                    "query": "(self.logs.action=='uploaded')&(self.logs.sample_name=='{sample_name}')",
+                    "action": "datetime.datetime.fromtimestamp(int([max(list({timestamp}))if self.iterable({timestamp}) else {timestamp}][0]))"
+                }
+            },
+            "eligibility": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "mrn": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "btid": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "hg38": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            }
+        },
+        "dropdown": {}
+    }, 
+    "Choose Plate": {
+        "args": {
+            "length": "len(self.plate_overview)",
+            "main_file": "plate_overview"
+        },
+        "columns": {
+            "plate_id": {
+                "pretty_name": "",
+                "storage_file": "plate_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "timestamp": {
+                "pretty_name": "Time Created",
+                "storage_file": "logs",
+                "type": "variable",
+                "unique": "True",
+                "args": {
+                    "query": "(self.logs.action=='created')&(self.logs.plate_id=='{plate_id}')",
+                    "action": "datetime.datetime.fromtimestamp(int([max(list({timestamp}))if self.iterable({timestamp}) else {timestamp}][0]))"
+                }
+            },
+            "build_plate": {
+                "pretty_name": "Select Plate",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "design_plate": {
+                "pretty_name": "Select Plate",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            }
+        },
+    "dropdown": {}
+    }, 
+    "Plate Primers": {
+        "args": {
+            "length": "len(self.plate_primers[self.plate_primers.plate_id == '{plate_id}'])",
+            "main_file": "plate_primers",
+            "subset_file": "self.plate_primers.plate_id == '{plate_id}'"
+        },
+        "columns": {
+            "primer": {
+                "pretty_name": "",
+                "storage_file": "plate_primers",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            }
+        },
+    "dropdown": {}
+    },
+    "Organize Plate": {
+        "args": {
+            "length": "len(self.plate_wells[self.plate_wells.plate_id == '{plate_id}'])",
+            "main_file": "plate_wells",
+            "subset_file": "self.plate_wells.plate_id == '{plate_id}'"
+        },
+        "columns": {
+            "sample_name": {
+                "pretty_name": "",
+                "storage_file": "plate_wells",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                    "query": "(self.plate_wells.plate_id=='{plate_id}')"
+                }
+            }, 
+            "btid": {
+                "pretty_name": "",
+                "storage_file": "samples_overview",
+                "type": "variable",
+                "unique": "True",
+                "args": {
+                    "query": "self.samples_overview.sample_name == '{sample_name}'"
+                }
+            }, 
+            "control": {
+                "pretty_name": "",
+                "storage_file": "plate_wells",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            }, 
+            "direction": {
+                "pretty_name": "",
+                "storage_file": "plate_wells",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            }, 
+            "well_row": {
+                "pretty_name": "",
+                "storage_file": "plate_wells",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            }, 
+            "well_column": {
+                "pretty_name": "",
+                "storage_file": "plate_wells",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            }, 
+            "primer": {
+                "pretty_name": "",
+                "storage_file": "plate_wells",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            }
+        },
+        "dropdown": {}
+    },
+    "Plate Overview": {
+        "args": {
+            "length": "len(self.plate_overview)",
+            "main_file": "plate_overview"
+        },
+        "columns": {
+            "plate_id": {
+                "pretty_name": "",
+                "storage_file": "plate_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "timestamp": {
+                "pretty_name": "Time Created",
+                "storage_file": "logs",
+                "type": "variable",
+                "unique": "True",
+                "args": {
+                    "query": "(self.logs.action=='created')&(self.logs.plate_id=='{plate_id}')",
+                    "action": "datetime.datetime.fromtimestamp(int([max(list({timestamp}))if self.iterable({timestamp}) else {timestamp}][0]))"
+                }
+            },
+            "assignee": {
+                "pretty_name": "",
+                "storage_file": "plate_overview",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                    "argument": ["arg_dict['item_list'] = [''] + self.names", "arg_dict['id_list'] = [''] + self.usernames"]
+                }
+            },
+            "comment": {
+                "pretty_name": "",
+                "storage_file": "logs",
+                "type": "variable",
+                "unique": "True",
+                "args": {
+                    "query": "(self.logs.action=='status')&(self.logs.plate_id=='{plate_id}')",
+                    "columns": ["user", "comment"]
+                }
+            },
+            "plate_report": {
+                "pretty_name": "View Plate Report",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "sequenced_plate_report": {
+                "pretty_name": "View  Sequenced Plate Report",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "build_plate": {
+                "pretty_name": "Select Plate",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "design_plate": {
+                "pretty_name": "Select Plate",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "file": {
+                "pretty_name": "",
+                "storage_file": "plate_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            }
+        },
+    "dropdown": {
+        }
+    },
+    "Plate Overview old": {
+        "columns": ["plate_overview.plate_id", "plate_overview.timestamp", "plate_overview.assignee", "plate_overview.status", "none.primer", "none.primer_status", "plate_overview.file"],
+        "dropdown": {
+            "Samples":  ["plate_wells.sample_name", "plate_wells.well_row", "plate_wells.well_column", "samples_overview.approval"]
+        }
+    },
+    "Plate Report Overview" : {
+        "columns": ["rsid", "gene", "primer", "primer_status", "target_region", "hg38"],
+        "dropdown": {
+        }
+    },
+    "Sequenced Plates": {
+        "columns": ["plate_overview.plate_id", "timestamp", "assignee", "status", "primer", "primer_status", "file"], 
+        "dropdown": {
+            "Samples":  ["sample_name", "well_row", "well_column", "approval"]
+        }
+    }, 
+    "Plate Report": {
+        "args": {
+            "length": "len(self.plate_overview[self.plate_overview.plate_id=='{plate_id}'])",
+            "main_file": "plate_overview"
+        },
+        "columns": {
+            "plate_id": {
+                "pretty_name": "",
+                "storage_file": "plate_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "timestamp": {
+                "pretty_name": "Time Created",
+                "storage_file": "logs",
+                "type": "variable",
+                "unique": "True",
+                "args": {
+                    "query": "(self.logs.action=='created')&(self.logs.plate_id=='{plate_id}')",
+                    "action": "datetime.datetime.fromtimestamp(int([max(list({timestamp}))if self.iterable({timestamp}) else {timestamp}][0]))"
+                }
+            },
+            "assignee": {
+                "pretty_name": "",
+                "storage_file": "plate_overview",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                    "argument": ["arg_dict['item_list'] = [''] + self.names", "arg_dict['id_list'] = [''] + self.usernames"]
+                }
+            },
+            "comment": {
+                "pretty_name": "",
+                "storage_file": "logs",
+                "type": "variable",
+                "unique": "True",
+                "args": {
+                    "query": "(self.logs.action=='status')&(self.logs.plate_id=='{plate_id}')",
+                    "columns": ["user", "comment"]
+                }
+            },
+            "lot_number": {
+                "pretty_name": "Select Plate",
+                "storage_file": "plate_overview",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "expirationDate": {
+                "pretty_name": "Select Plate",
+                "storage_file": "plate_overview",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "plate_report": {
+                "pretty_name": "View Plate Report",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "build_plate": {
+                "pretty_name": "Select Plate",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "design_plate": {
+                "pretty_name": "Select Plate",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "file": {
+                "pretty_name": "",
+                "storage_file": "plate_overview",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            }
+        },
+        "dropdown": {}
+    },
+    "Primer List": {
+        "args": {
+            "length": "len(self.primer_list)",
+            "main_file": "primer_list"
+        },
+        "columns": {
+            "primer_num": {
+                "pretty_name": "",
+                "storage_file": "primer_list",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "pair_set": {
+                "pretty_name": "",
+                "storage_file": "primer_list",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "primer_details": {
+                "pretty_name": "",
+                "storage_file": "primer_list",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "gene": {
+                "pretty_name": "",
+                "storage_file": "primer_list",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "exon": {
+                "pretty_name": "",
+                "storage_file": "primer_list",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "rsid": {
+                "pretty_name": "",
+                "storage_file": "primer_list",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "diplotype": {
+                "pretty_name": "",
+                "storage_file": "primer_list",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+            "pnum": {
+                "pretty_name": "",
+                "storage_file": "primer_list",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            }, 
+            "M13": {
+                "pretty_name": "",
+                "storage_file": "primer_list",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            },
+             "direction": {
+                "pretty_name": "",
+                "storage_file": "primer_list",
+                "type": "static",
+                "unique": "True",
+                "args": {
+                }
+            }
+
+            
+        },
+        "dropdown": {}
+    },
+    "Controls": {
+        "args": {
+                "length": "len(self.plate_wells[(self.plate_wells.plate_id == '{plate_id}') & ((self.plate_wells['control'] != ''))])",
+                "main_file": "plate_wells",
+                "subset_file": "(self.plate_wells.plate_id == '{plate_id}') & (self.plate_wells['control'] != '')"
+            },
+            "columns": {
+                "sample_name": {
+                    "pretty_name": "Control Name",
+                    "storage_file": "plate_wells",
+                    "type": "static",
+                    "unique": "True",
+                    "args": {
+                        "query": "((self.plate_wells.plate_id=='{plate_id}') & ((self.plate_wells['control'] != ''))])"
+                    }
+                },
+                "control": {
+                    "pretty_name": "control",
+                    "storage_file": "plate_wells",
+                    "type": "static",
+                    "unique": "True",
+                    "args": {
+                        "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                    }
+                },
+                "primer": {
+                    "pretty_name": "",
+                    "storage_file": "plate_wells",
+                    "type": "static",
+                    "unique": "True",
+                    "args": {
+                    }
+                },
+                "primer_status": {
+                    "pretty_name": "",
+                    "storage_file": "plate_wells",
+                    "type": "editable",
+                    "unique": "True",
+                    "args": {
+                    }
+                }
+            },
+            "dropdown": {}
+    },
+    "Assigned Samples": {
+        "args": {
+                "length": "len(self.plate_wells[(self.plate_wells.plate_id == '{plate_id}') & (self.plate_wells['count'] != '') & (self.plate_wells['control'] == '')])",
+                "main_file": "plate_wells",
+                "subset_file": "(self.plate_wells.plate_id == '{plate_id}') & (self.plate_wells['count'] != '')& (self.plate_wells['control'] == '') "
+            },
+            "columns": {
+                "sample_name": {
+                    "pretty_name": "",
+                    "hidden": "true", 
+                    "storage_file": "plate_wells",
+                    "type": "static",
+                    "unique": "True",
+                    "args": {
+                        "query": "((self.plate_wells.plate_id=='{plate_id}') & (self.plate_wells['count'] != '') & (self.plate_wells['control'] == '')])"
+                    }
+                },
+                "mrn": {
+                    "pretty_name": "MRN",
+                    "storage_file": "samples_overview",
+                    "type": "variable",
+                    "unique": "True",
+                    "args": {
+                        "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                    }
+                },
+                "btid": {
+                    "pretty_name": "BTID",
+                    "storage_file": "samples_overview",
+                    "type": "variable",
+                    "unique": "True",
+                    "args": {
+                        "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                    }
+                },
+                "gene": {
+                    "pretty_name": "Gene",
+                    "storage_file": "samples_overview",
+                    "type": "variable",
+                    "unique": "True",
+                    "args": {
+                        "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                    }
+                },
+                "direction": {
+                    "pretty_name": "Direction",
+                    "storage_file": "plate_wells",
+                    "type": "static",
+                    "unique": "True",
+                    "args": {
+                        "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                    }
+                },
+                "primer": {
+                    "pretty_name": "",
+                    "storage_file": "plate_wells",
+                    "type": "static",
+                    "unique": "True",
+                    "args": {
+                    }
+                },
+                "primer_status": {
+                    "pretty_name": "",
+                    "storage_file": "plate_wells",
+                    "type": "editable",
+                    "unique": "True",
+                    "args": {
+                    }
+                }
+            },
+            "dropdown": {}
+        }, 
+        "Sequenced Samples": {
+            "args": {
+                    "length": "len(self.plate_wells[(self.plate_wells.plate_id == '{plate_id}') & (self.plate_wells['count'] != '') & (self.plate_wells['control'] == '')])",
+                    "main_file": "plate_wells",
+                    "subset_file": "(self.plate_wells.plate_id == '{plate_id}') & (self.plate_wells['count'] != '')& (self.plate_wells['control'] == '') "
+                },
+                "columns": {
+                    "sample_name": {
+                        "pretty_name": "",
+                        "hidden": "true", 
+                        "storage_file": "plate_wells",
+                        "type": "static",
+                        "unique": "True",
+                        "args": {
+                            "query": "((self.plate_wells.plate_id=='{plate_id}') & (self.plate_wells['count'] != '') & (self.plate_wells['control'] == '')])"
+                        }
+                    },
+                    "mrn": {
+                        "pretty_name": "MRN",
+                        "storage_file": "samples_overview",
+                        "type": "variable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "btid": {
+                        "pretty_name": "BTID",
+                        "storage_file": "samples_overview",
+                        "type": "variable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "gene": {
+                        "pretty_name": "Gene",
+                        "storage_file": "samples_overview",
+                        "type": "variable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "cdot": {
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "variable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "obs_cdot": {
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "editable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "pdot": {
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "variable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "obs_pdot": {
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "editable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "CLNHGVS": {
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "variable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "NM": {
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "variable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "obs_NM": {
+                        "pretty_name": "",
+                        "storage_file": "samples_overview",
+                        "type": "editable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "direction": {
+                        "pretty_name": "Direction",
+                        "storage_file": "plate_wells",
+                        "type": "static",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "primer": {
+                        "pretty_name": "",
+                        "storage_file": "plate_wells",
+                        "type": "static",
+                        "unique": "True",
+                        "args": {
+                        }
+                    },
+                    "primer_status": {
+                        "pretty_name": "",
+                        "storage_file": "plate_wells",
+                        "type": "editable",
+                        "unique": "True",
+                        "args": {
+                        }
+                    }
+                },
+                "dropdown": {}
+            }, 
+        "Unassigned Samples": {
+            "args": {
+                    "length": "len(self.plate_wells[(self.plate_wells.plate_id == '{plate_id}') & (self.plate_wells['count'] == '') & (self.plate_wells['assigned'] == '')])",
+                    "main_file": "plate_wells",
+                    "subset_file": "(self.plate_wells.plate_id == '{plate_id}') & (self.plate_wells['count'] == '') & (self.plate_wells['assigned'] == '')"
+                },
+                "columns": {
+                    "sample_name": {
+                        "pretty_name": "",
+                        "hidden": "true",
+                        "storage_file": "plate_wells",
+                        "type": "static",
+                        "unique": "True",
+                        "args": {
+                            "query": "((self.plate_wells.plate_id=='{plate_id}')&( self.plate_wells['count'] == '')])"
+                        }
+                    },
+                    "mrn": {
+                        "pretty_name": "MRN",
+                        "storage_file": "samples_overview",
+                        "type": "variable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "btid": {
+                        "pretty_name": "BTID",
+                        "storage_file": "samples_overview",
+                        "type": "variable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "gene": {
+                        "pretty_name": "Gene",
+                        "storage_file": "samples_overview",
+                        "type": "variable",
+                        "unique": "True",
+                        "args": {
+                            "query": "(self.samples_overview.sample_name =='{sample_name}')"
+                        }
+                    },
+                    "primer": {
+                        "pretty_name": "",
+                        "storage_file": "plate_wells",
+                        "type": "static",
+                        "unique": "True",
+                        "args": {
+                        }
+                    },
+                    "primer_status": {
+                        "pretty_name": "",
+                        "storage_file": "plate_wells",
+                        "type": "editable",
+                        "unique": "True",
+                        "args": {
+                        }
+                    }
+                },
+                "dropdown": {}
+            }
+}

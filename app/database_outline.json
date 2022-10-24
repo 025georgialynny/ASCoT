@@ -1,0 +1,577 @@
+{
+  "tables": {
+    "Approvals": "approvals",
+    "Sample Information": "samples_overview",
+    "Logs": "logs",
+    "Plate Information": "plate_overview", 
+    "Plate Wells": "plate_wells", 
+    "Plate Primers": "plate_primers", 
+    "Primer List": "primer_list"
+    },
+  "table_mapping": {
+    "Plate Primers": {
+      "comments": "", 
+      "table_args": {
+          "name": "plate_primers",
+          "pks": ["plate_id", "primer"]
+      },
+      "groups": {
+
+      },
+      "variables": {
+          "plate_id": {
+              "prettyname": "Plate ID",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": "NOT NULL"
+          },
+          "primer": {
+              "prettyname": "Primer",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+          }
+      }
+    },
+    "Primer List": {
+      "comments": "", 
+      "table_args": {
+          "name": "primer_list",
+          "pks": ["primer_num"]
+      },
+      "groups": {
+
+      },
+      "variables": {
+          "pair_set": {
+              "prettyname": "Pair Set",
+              "vartype": "INT",
+              "format": "",
+              "args": "NOT NULL"
+          },
+          "primer_num": {
+              "prettyname": "Primer Number",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+          },
+          "primer_details": {
+              "prettyname": "Primer Details",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+          },
+          "gene": {
+              "prettyname": "Gene",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+          },
+          "exon": {
+              "prettyname": "Exon",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+          },
+          "rsid": {
+              "prettyname": "rsID",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+          },
+          "diplotype": {
+              "prettyname": "Diplotype",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+          }, 
+          "pnum": {
+              "prettyname": "Diplotype",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+          }, 
+          "M13": {
+              "prettyname": "Diplotype",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+          }, 
+          "direction": {
+              "prettyname": "Diplotype",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+          }
+      }
+    },
+    "Plate Wells": {
+        "comments": "", 
+        "table_args": {
+            "name": "logs",
+            "pks": ["plate_id", "sample_name"]
+        },
+        "groups": {
+
+        },
+        "variables": {
+            "plate_id": {
+                "prettyname": "Plate ID",
+                "vartype": "VARCHAR",
+                "format": "",
+                "args": "NOT NULL"
+            },
+            "well_row": {
+                "prettyname": "Well Row",
+                "vartype": "INT",
+                "format": "",
+                "args": ""
+            }, 
+            "well_column": {
+                "prettyname": "Well Column",
+                "vartype": "INT",
+                "format": "",
+                "args": ""
+            },
+            "sample_name": {
+                "prettyname": "Sample Name",
+                "vartype": "VARCHAR",
+                "format": "",
+                "args": "NOT NULL"
+            },
+            "control": {
+                "prettyname": "Control Type",
+                "vartype": "VARCHAR",
+                "format": "",
+                "args": ""
+            },
+            "direction": {
+                "prettyname": "Sample Direction",
+                "vartype": "VARCHAR",
+                "format": "",
+                "args": ""
+            },
+            "count": {
+                "prettyname": "Count",
+                "vartype": "INT",
+                "format": "",
+                "args": ""
+            },
+            "assigned": {
+                "prettyname": "Assigned",
+                "vartype": "INT",
+                "format": "",
+                "args": ""
+            },
+            "primer": {
+              "prettyname": "Primer",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+            },
+            "primer_status": {
+              "prettyname": "Primer Status",
+              "vartype": "ENUM('Available', 'Ordered', 'Unavailable')",
+              "format": "",
+              "args": ""
+            }
+        }
+    },
+    "Plate Information": {
+        "comments": "", 
+        "table_args": {
+            "name": "logs",
+            "pks": ["plate_id"]
+        },
+        "groups": {
+
+        },
+        "variables": {
+            "plate_id": {
+                "prettyname": "Plate ID",
+                "vartype": "VARCHAR",
+                "format": "",
+                "args": "NOT NULL"
+            },
+            "plate_rows": {
+                "prettyname": "Plate Rows",
+                "vartype": "INT",
+                "format": "",
+                "args": "NOT NULL DEFAULT '8'"
+            },
+            "plate_columns": {
+                "prettyname": "Plate Columns",
+                "vartype": "INT",
+                "format": "",
+                "args": "NOT NULL DEFAULT '12'"
+            },
+            "assignee": {
+                "prettyname": "Assignee",
+                "vartype": "VARCHAR",
+                "format": "",
+                "args": ""
+            },
+            "status": {
+                "prettyname": "Status",
+                "vartype": "VARCHAR",
+                "format": "",
+                "args": ""
+            },
+            "lot_number":{
+              "prettyname": "Lot Number",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+
+            }, 
+            "expirationDate": {
+              "prettyname": "Expiration Date",
+              "vartype": "VARCHAR",
+              "format": "",
+              "args": ""
+
+            },
+            "file": {
+                "prettyname": "File",
+                "vartype": "VARCHAR",
+                "format": "",
+                "args": ""
+            }
+        }
+    },
+    "Logs": {
+            "comments": "", 
+            "table_args": {
+                "name": "logs",
+                "pks": ["user", "timestamp"]
+            },
+            "groups": {
+    
+            },
+            "variables": {
+                "user": {
+                    "prettyname": "user",
+                    "vartype": "VARCHAR",
+                    "format": "",
+                    "args": "NOT NULL"
+                },
+                "timestamp": {
+                    "prettyname": "Timestamp",
+                    "vartype": "TIMESTAMP",
+                    "format": "",
+                    "args": "NOT NULL ON UPDATE"
+                },
+                "action": {
+                    "prettyname": "Action",
+                    "vartype": "VARCHAR",
+                    "format": "",
+                    "args": "NOT NULL"                    
+                },
+                "comment":{
+                    "prettyname": "Comment",
+                    "vartype": "VARCHAR",
+                    "format": "",
+                    "args": ""
+                },
+                "sample_name":{
+                    "prettyname": "Sample Name",
+                    "vartype": "VARCHAR",
+                    "format": "",
+                    "args": ""
+                },
+                "plate_id": {
+                    "prettyname": "Timestamp",
+                    "vartype": "VARCHAR",
+                    "format": "",
+                    "args": ""
+                }
+            }
+    },
+    "Approvals": {
+        "comments": "", 
+        "table_args": {
+            "name": "approvals",
+            "pks": ["user", "timestamp", "sample_name"]
+        },
+        "groups": {
+
+        },
+        "variables": {
+            "approval": {
+                "prettyname": "Approval",
+                "vartype": "ENUM('Pass', 'Fail')",
+                "format": "",
+                "args": "NOT NULL"
+            },
+            "user": {
+                "prettyname": "user",
+                "vartype": "VARCHAR",
+                "format": "",
+                "args": "NOT NULL"
+            },
+            "timestamp": {
+                "prettyname": "Review Timestamp",
+                "vartype": "TIMESTAMP",
+                "format": "",
+                "args": "NOT NULL ON UPDATE"
+            },
+            "sample_name": {
+                "prettyname": "Sample Name",
+                "vartype": "VARCHAR",
+                "format": "",
+                "args": "NOT NULL"
+              },
+            "plate_id": {
+                "prettyname": "Plate ID",
+                "vartype": "VARCHAR",
+                "format": "",
+                "args": "NOT NULL"
+            }
+        }
+    },
+    "Sample Information": {
+      "comments": "",
+      "table_args": {
+          "name": "samples",
+          "pks": ["sample_name"]
+      },
+      "groups": {
+        "prior_data": {
+            "main": ["sample_name", "rsid", "chromosome", "hg38", "gene", "btid"],
+            "persion_info": ["sex", "race", "ethnicity", "mrn"],
+            "regeneron_dat": [
+            "regeneron_ID",
+            "instrumentid1",
+            "impute_A1",
+            "impute_A2",
+            "CLN_A1",
+            "CLN_A2",
+            "CLNHGVS",
+            "CLNSIG",
+            "CLNREVSTAT",
+            "ACMG",
+            "Inheritance",
+            "CLNDBN",
+            "OMIM_Phenotype"
+            ]
+        },
+        "lab_data": {
+            "editable": ["primer", "primer_status", "eligibility"],
+            "status": ["approval", "confirmed"]
+        }
+      },
+      "variables": {
+        "sample_name": {
+          "prettyname": "Sample Name",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL PRIMARY KEY"
+        },
+        "variant": {
+          "prettyname": "Variant",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "rsid": {
+          "prettyname": "rsID",
+          "vartype": "BIGINT",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "chromosome": {
+          "prettyname": "Chromosome",
+          "vartype": "INT",
+          "format": "",
+          "args":"NOT NULL"
+        },
+        "flow_cell_id": {
+          "prettyname": "Flow Cell ID",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args":"NOT NULL"
+        },
+        "sequencing_date": {
+          "prettyname": "Sequencing Date",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args":"NOT NULL"
+        },
+        "hg38": {
+          "prettyname": "HG38",
+          "vartype": "BIGINT",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "RackID": {
+          "prettyname": "Rack ID",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args":"NOT NULL"
+        },
+        "ship_date": {
+          "prettyname": "Ship Date",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args":"NOT NULL"
+        },
+        "gene": {
+          "prettyname": "Gene",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "btid": {
+          "prettyname": "BTID",
+          "vartype": "BIGINT",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "sex": {
+          "prettyname": "Sex",
+          "vartype": "ENUM('Male', 'Female')",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "race": {
+          "prettyname": "Race",
+          "vartype": "ENUM('White of Caucasian', 'Other', 'Unknown', 'Asian', 'Black or African American', 'Native Hawaiian or other Pacific Islander', 'American Indian or Alaska Native')",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "obs_cdot": {
+          "prettyname": "Observed CDOT",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "obs_pdot": {
+          "prettyname": "Observed PDOT",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "obs_NM": {
+          "prettyname": "NM #",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "ethnicity": {
+          "prettyname": "Ethnicity",
+          "vartype": "ENUM('Hispanic', 'Non-Hispanic', 'Unknown')",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "mrn": {
+          "prettyname": "MRN",
+          "vartype": "BIGINT",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "instrumentid": {
+          "prettyname": "Instrument ID",
+          "vartype": "BIGINT",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "RGC_A1": {
+          "prettyname": "Allele 1 Imputation",
+          "vartype": "ENUM('A', 'C', 'T', 'G')",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "RGC_A2": {
+          "prettyname": "Allele 2 Imputation",
+          "vartype": "ENUM('A', 'C', 'T', 'G')",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "CLN_A1": {
+          "prettyname": "Allele 1 Clinical Annotation",
+          "vartype": "ENUM('A', 'C', 'T', 'G')",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "CLN_A2": {
+          "prettyname": "Allele 2 Clinical Annotation",
+          "vartype": "ENUM('A', 'C', 'T', 'G')",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "CLNHGVS": {
+          "prettyname": "",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "CLNSIG": {
+          "prettyname": "",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "CLNREVSTAT": {
+          "prettyname": "",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "ACMG": {
+          "prettyname": "",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "inheritance": {
+          "prettyname": "",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "CLNDBN": {
+          "prettyname": "",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "OMIM_Phenotype": {
+          "prettyname": "",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "target_region": {
+          "prettyname": "Target Region",
+          "vartype": "VARCHAR",
+          "format": "",
+          "args": ""
+        },
+        "eligibility": {
+          "prettyname": "Eligibility",
+          "vartype": "ENUM('Unknown', 'Eligible', 'Not Eligible')",
+          "format": "",
+          "args": "NOT NULL"
+        },
+        "approval": {
+          "prettyname": "Approval",
+          "vartype": "ENUM('Approved', 'Failed')",
+          "format": "",
+          "args": ""
+        },
+        "confirmed": {
+          "prettyname": "Confirmed",
+          "vartype": "ENUM('Approved', 'Failed')",
+          "format": "",
+          "args": ""
+        },
+        "signed_out": {
+          "prettyname": "Signed Out",
+          "vartype": "ENUM('Yes', 'No')",
+          "format": "",
+          "args": ""
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,442 @@
+{% extends "base.html" %}
+{% block content %}
+
+{%set data = bigdata["tables"]%}
+  
+{% if 'dropdown' in bigdata.keys() %}
+  {%set dropdown = bigdata["dropdown"]%}
+{%else%}
+  {%set dropdown = {}%}
+{%endif%}
+
+
+{% set samporg = dict() %}
+{% set sampjs = dict() %}
+{% set done = [] %}
+
+{% set sample_lists = ["Assigned Samples", "Controls", "Unassigned Samples"]%}
+{% for listname in sample_lists %}
+  {%if (listname == "Controls")%}  
+    {% set samps = data[listname]['Control Name'] %}
+  {%else%}
+    {% set samps = data[listname]['hidden-sample_name'] %}
+  {%endif%}
+
+  {% set count = namespace(value=0)%}
+  {% for samp in samps %}
+    {%if (listname == "Unassigned Samples")%}
+      {% set  x = samporg.__setitem__(samp, {"assigned": "F", "btid": data[listname]['BTID'][count.value], "gene": data[listname]['Gene'][count.value],  "direction": "","control": "", "primer": data[listname]['primer'][count.value]})%}
+    {%elif (listname == "Controls")%}
+      {% set  x = samporg.__setitem__(samp, {"assigned": "T", "btid": "","gene": "",  "direction": "","control": data[listname]['control'][count.value], "primer": data[listname]['primer'][count.value]})%}
+    {%elif (samp in done)%}
+      {% set  x = samporg.__setitem__(samp + "-2", {"assigned": "T", "btid": data[listname]['BTID'][count.value], "gene": data[listname]['Gene'][count.value], "direction":  data[listname]['Direction'][count.value],"control": "", "primer": data[listname]['primer'][count.value]})%}
+    {%else%}
+      {% set x = done.append(samp) %}
+      {% set  x = samporg.__setitem__(samp+ "-1", {"assigned": "T",  "btid": data[listname]['BTID'][count.value], "gene": data[listname]['Gene'][count.value],"direction":  data[listname]['Direction'][count.value],"control": "", "primer": data[listname]['primer'][count.value]})%}
+    {%endif%}
+      {% set count.value = count.value + 1%}
+  {%endfor%}
+{%endfor%}
+
+
+{% set done = [] %}
+{% set count = namespace(value=0)%}
+{% for samp in data["Organize Plate"]['sample_name'] %}
+    {%if (data["Organize Plate"]['well_row'][count.value] != '' and data["Organize Plate"]['well_column'][count.value] != '')%}
+      {%if (samp in done)%}
+        {% set  x = sampjs.__setitem__(samp + "-2", {"btid": data["Organize Plate"]['btid'][count.value], "direction": data["Organize Plate"]['direction'][count.value],"control": data["Organize Plate"]['control'][count.value],"row": data["Organize Plate"]['well_row'][count.value], "col": data["Organize Plate"]['well_column'][count.value], "primer": data["Organize Plate"]['primer'][count.value]})%}
+      {%else%}
+        {% set x = done.append(samp) %}
+        {% set  x = sampjs.__setitem__(samp + "-1", {"btid": data["Organize Plate"]['btid'][count.value], "direction": data["Organize Plate"]['direction'][count.value],"control": data["Organize Plate"]['control'][count.value],"row": data["Organize Plate"]['well_row'][count.value], "col": data["Organize Plate"]['well_column'][count.value], "primer": data["Organize Plate"]['primer'][count.value]})%}
+      {%endif%}
+    {%endif%}
+    {% set count.value = count.value + 1%}
+  {%endfor%}
+
+
+<script type="text/javascript">
+
+var primer_list = {{data["Primer List"]|safe}}
+var samp_dict = {{samporg | safe}}
+      var color_list = []
+      var color_dict = {}
+      var primertlist = {}
+
+    $(document).ready(function()
+      { 
+          console.log(samp_dict)
+          var cur_ps = 0
+          var num = ""
+          var det =  ""
+          console.log(primer_list)
+          $.each(primer_list["pair_set"], function(i, obj){
+            if (cur_ps == obj){
+              num = num + primer_list["primer_num"][i] + ","
+              primertlist[cur_ps] = "Numbers: " + num + " " + det
+              num = ""
+              det = ""
+            } else {
+              cur_ps = obj
+              num = num + primer_list["primer_num"][i] + ","
+              if (det == ""){
+                det = "Gene: " + primer_list["gene"][i] 
+              }
+              if (primer_list["M13"][i] == 1) {
+                det = det + ", M13"
+              }
+            }
+          })
+          var assigned_head = $("table#assigned thead")
+          var assigned_body = $("table#assigned tbody")
+          var unassigned_head = $("table#unassigned thead")
+          var unassigned_body = $("table#unassigned tbody")
+
+          for (samp in samp_dict){
+            if(samp_dict[samp]['assigned'] == "T"){
+              if(assigned_head.children().length == 0){
+                assigned_head.append("<tr></tr>")
+                for (keys in samp_dict[samp]){
+                  if(keys != "assigned"){
+                    assigned_head.children("tr:first").append("<th>" + keys + "</th>")
+                  }
+                }
+              }
+                 assigned_body.append("<tr></tr>")
+                for (keys in samp_dict[samp]){
+                  if(keys != "assigned"){
+                    if((keys == "control") && (samp_dict[samp]["control"] != "")) {
+
+                    assigned_body.children("tr:last").append("<td>" +  samp + "</td>")
+
+                    } else if((keys == "direction") && (samp_dict[samp]["control"] != "")) {
+
+                    assigned_body.children("tr:last").append("<td>" + samp_dict[samp]["control"]+ "</td>")
+
+                    } else if (keys == "primer" && samp_dict[samp][keys] != "" ){
+                      assigned_body.children("tr:last").append("<td>" + primertlist[samp_dict[samp][keys]]+ "</td>")
+                    } else {
+                      assigned_body.children("tr:last").append("<td>" + samp_dict[samp][keys] + "</td>")
+                    }
+                  }
+                }
+            } else {
+              if(unassigned_head.children().length == 0){
+                unassigned_head.append("<tr></tr>")
+                for (keys in samp_dict[samp]){
+                  if($.inArray(keys, ["assigned", "direction", "control"])){
+                    unassigned_head.children("tr:first").append("<th>" + keys + "</th>")
+                  }
+                }
+              }
+                 unassigned_body.append("<tr></tr>")
+                for (keys in samp_dict[samp]){
+                  if($.inArray(keys, ["assigned", "direction", "control"])){
+                    if (keys == "primer" && samp_dict[samp][keys] != "" ){
+                      unassigned_body.children("tr:last").append("<td>" + primertlist[samp_dict[samp][keys]]+ "</td>")
+                    } else {
+                      unassigned_body.children("tr:last").append("<td>" + samp_dict[samp][keys] + "</td>")
+                    }
+                  }
+                }
+            }
+          }
+
+      var sampdict = {{sampjs|safe}};
+      console.log(sampdict)
+      var primerlegend = []
+      for (const [ key, value ] of Object.entries(sampdict)) {
+          // do something with `key` and `value`
+          console.log(key, value)
+          var mykey = key.split("-")[0]
+          if (value['row'] != "" & value['col'] != ''){
+            console.log(key, value)
+            var to = $("table.plate td[col = " + value['col'] + "][row = " + value['row'] + "]:first")
+            console.log(to)
+            if(value['control'] != ''){
+              to.append(value['control'])
+            } else{
+              to.append(value['btid'])
+            }
+            if (value['direction']!= "") {
+              if (value['direction'] == "forward"){
+                to.append("&#8594;")
+              } else {
+                to.append("&#8592;")
+              }
+            }
+            if (value['primer']!= "") {
+              var primer = primertlist[value["primer"]]
+              if(color_dict[primer]){
+                to.attr("style", "background-color:" + color_dict[primer]["base"])
+              } else {
+                color_dict[primer] = set_color()
+                to.attr("style", "background-color:" + color_dict[primer]["base"])
+              }
+              if ($.inArray(primer, primerlegend) == -1){
+                $("table#plegend tbody").append("<tr><td>" + primer + "</td></tr>")
+                $("table#plegend tbody").children("tr:last").attr("style", "background-color:" + color_dict[primer]["base"])
+                primerlegend.push(primer)
+              }
+            }
+          
+      }
+    }
+
+
+              });
+
+
+      function set_color() {
+        if (color_list.length == 0){
+          color_list.push(15)
+          console.log("hellow")
+        } else{
+          color_list.push(color_list[color_list.length - 1] + 67)
+        }
+        return({"base": "hsla("+color_list[color_list.length - 1]+", 72%, 60%, 1)!important", "rev": "hsla("+color_list[color_list.length - 1]+", 72%, 40%, 1)", "fwd": "hsla("+color_list[color_list.length - 1]+", 72%, 80%, 1)"})
+      }
+
+
+
+  function setDirection(item, direction) {
+      if (direction == 'forward') {
+        item.children(".dropdown").find('.btn').html('→ <span class="caret"></span>');
+        item.children(".dropdown").find('.btn').attr("id", "foward")
+      } else {
+        item.children(".dropdown").find('.btn').html('← <span class="caret"></span>');
+        item.children(".dropdown").find('.btn').attr("id", "backward")
+      }
+    }
+    $(document).on('click', '#sel', function() { 
+      $("tr:visible").has("td").each(function(i, obj) { 
+        $(obj).children('td.headcol').children("input").prop('checked', true);
+      })
+
+    });
+     $(document).on('click', '#desel', function() { 
+      $("tr:visible").has("td").each(function(i, obj) { 
+        $(obj).children('td.headcol').children("input").prop('checked', false);
+      })
+    });
+
+    $(document).on('click', '.clickable a', function(e) { 
+      console.log(e.target)
+      window.location  = $(e.target).attr("href");
+      })
+      $(document).ready(function()
+      {
+       
+      });
+
+
+      $(document).on("keypress", "input.control", function(event) {
+        if (event.key == "Enter") {
+          $(this).focusout()
+        }
+    })
+
+    $(document).on("keypress", "#primerInput", function(event) {
+        if (event.key == "Enter") {
+          $(this).focusout()
+        } 
+    })
+
+    $(document).on("input", "#primerInput", function(event) {
+          var val = $("#primerInput").val();
+          var opts = $('#primersearch').children();
+          console.log(val)
+          $.each(opts, function(i, obj){
+            if (obj.value === val) {
+              // An item was selected from the list!
+              // yourCallbackHere()
+              $("#primerInput").focusout()
+              return
+            }
+          })
+    })
+
+    $(document).on("click", "#printrep", function(event){
+      printplate()
+    })
+    function printplate(){
+      var pwindow = window.open()
+      var doc = pwindow.document
+      pwindow.document.write("<head>")
+      $("link").each(function(i, obj){
+        $(obj).attr("media", "print")
+        pwindow.document.write(obj.outerHTML)
+        $(obj).attr("media", "screen")
+        pwindow.document.write(obj.outerHTML)
+      })
+
+      pwindow.document.write(" <style>body{background-color:white !important;}@page { size:  28.56cm 20cm;margin: .25cm .25cm .25cm .25cm ; }\
+      @media print{ " +
+       ' table {' +
+  'border-collapse: separate;' +
+  '}' +
+'table td{' +
+'border: 1px solid gray !important;' +
+'}' +
+'table th{' +
+'border: 1px solid gray !important;' +
+'}' +
+  "}\
+        </style></head>")
+      $("div#printable").each(function(idx, obj){
+        pwindow.document.write(obj.innerHTML)
+      })
+      setTimeout(function() {
+            pwindow.print();
+            pwindow.close();
+        }, 1000);
+    }
+</script>
+<form action="/plate_data" method = "POST">
+  {% set plate_data = data["Plate Report"] %}
+  <input type = "hidden" value = "{{plate_data}}" name = "plate_data"/>
+  <input type = "hidden" value = "{{bigdata}}" name = "data"/>
+<div class="container-fluid">
+
+    <hr class="mt-2 mb-3"/>
+    <div class=container-fluid>
+      <div class = row id = heading>
+        <div class = "col-md-4 text-center"><div id = "printable"><h1>Plate Report: {{plate_data["plate_id"][0]}}</h1></div></div>
+
+        <div class = "col-md-2">
+          <button class="btn btn-primary" id = "printrep">Print Plate</button>
+        </div>
+        <div class = "col-md-2">
+          {{plate_data["build_plate"][0]|safe}}
+        </div>
+      <div class = "col-md-2">
+        {{plate_data["design_plate"][0]|safe}}
+      </div>
+      <div class = "col-md-2"><a class="btn btn-primary" href="/sequenced_plate?plate_id=t1">Sequenced Plate</a></div>
+
+     </div>
+     <hr class="mt-2 mb-3"/>
+     <div class = row id = plate_info>
+      <div class = "col-md-6">
+        <h2>Time Created: {{plate_data["Time Created"][0]}}</h2>
+      </div>
+      <div class = "col-md-6">
+        <h2>Assignee: {{plate_data["assignee"][0] | safe}}</h2>
+      </div>
+     </div>
+
+    </div>
+
+
+    <div class=container-fluid>
+      <hr class="mt-2 mb-3"/>
+      <div class = row id = plate_info style = "padding: 10px">
+        <div class = "col-md-4">
+          <h3>Status: </h3>{{plate_data["comment"][0]|safe}}
+        </div>
+        <div class = "col-md-4">
+          <h3>Lot Number: </h3>{{plate_data["lot_number"][0]|safe}}
+        </div>
+        <div class = "col-md-4">
+          <h3>Expiration Date: </h3>{{plate_data["expirationDate"][0]|safe}}
+        </div>
+      </div>
+    </div>
+    <center><button type="submit" class="btn btn-secondary mb-2">Submit Plate Data</button></center>
+  </form>
+    <hr class="mt-2 mb-3"/>
+
+    <h2> Assigned Samples: </h2>
+
+    <table id="assigned" class = "table table-striped">
+      <thead>
+
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+
+    {% set letters = ["", "A", "B", "C", "D", "E", "F", "G", "H"]%}
+
+   
+  <div class="container-fluid">
+    <div class = "row">
+      <div class = "col-md-8">
+
+        <h2>Plate:</h2> 
+        <div id = "printable">
+        <table class="table plate">
+          {% set head = TRUE %}
+          {% set count = namespace(value=0)%}
+          {%for row in range(9)%}
+            {% if row == 0%}
+              <thead>
+                <tr>
+                {%for col in range(13)%}
+                  {% if col == 0%}
+                    <th scope="col" class = "rowhead" style="width:4%"></th>
+                  {%else %}
+                    <th scope="col" class = "maincol" style="width:8%">{{col}}</th>
+                  {%endif%}
+                {%endfor%}
+              </tr>
+              </thead>
+              {%set head = FALSE%}
+            {%else %}
+              {% if count.value == 1%}
+                <tbody>
+              {%endif%}
+              <tr>
+              {%for col in range(13)%}
+                {% if col == 0%}
+                <th scope="row">{{letters[count.value]}}</td>
+                {%else %} 
+        
+                <td id = "plate" col = "{{col}}" row = "{{count.value}}">
+                 </td>
+                {%endif%}
+              {%endfor%}
+              </tr>
+              {%if count.value == 8%}
+                </tbody>
+              {%endif%}
+            {%endif%}
+            {% set count.value = count.value + 1 %}
+          {%endfor%}
+          </table>
+          </div>
+      </div>
+      <div class="col-md-4" id = "primer-legend">
+    <div id = "printable">
+
+        <h2>Primers:</h2> 
+        <table id = "plegend" class = table>
+          <thead>
+            <th>
+              Primer
+            </th>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
+      </div>
+      </div>
+          </div>
+  </div>
+
+
+
+    <h2> Unassigned Samples: </h2>
+    <table id="unassigned" class = "table table-striped">
+      <thead>
+
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+    
+  </div>
+
+{%endblock%}

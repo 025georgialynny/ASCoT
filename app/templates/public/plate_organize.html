@@ -1,0 +1,867 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{%set data = bigdata["tables"]%}
+
+{% if 'dropdown' in bigdata.keys() %}
+  {%set dropdown = bigdata["dropdown"]%}
+{%else%}
+  {%set dropdown = {}%}
+{%endif%}
+
+{% set samps = data["Organize Plate"]['sample_name'] %}
+{% set samporg = dict() %}
+{% set sampjs = dict() %}
+{% set count = namespace(value=0)%}
+{% set done = [] %}
+{% for samp in samps %}
+  {%if (data["Organize Plate"]['well_row'][count.value] == '' and data["Organize Plate"]['well_column'][count.value] == '')%}
+    {% set  x = samporg.__setitem__(samp, {"btid": data["Organize Plate"]['btid'][count.value], "direction": data["Organize Plate"]['direction'][count.value],"control": data["Organize Plate"]['control'][count.value],"row": data["Organize Plate"]['well_row'][count.value], "col": data["Organize Plate"]['well_column'][count.value], "primer": data["Organize Plate"]['primer'][count.value]})%}
+  {%elif (samp in done)%}
+    {% set  x = sampjs.__setitem__(samp + "-2", {"btid": data["Organize Plate"]['btid'][count.value], "direction": data["Organize Plate"]['direction'][count.value],"control": data["Organize Plate"]['control'][count.value],"row": data["Organize Plate"]['well_row'][count.value], "col": data["Organize Plate"]['well_column'][count.value], "primer": data["Organize Plate"]['primer'][count.value]})%}
+  {%else%}
+    {% set x = done.append(samp) %}
+    {% set  x = sampjs.__setitem__(samp + "-1", {"btid": data["Organize Plate"]['btid'][count.value], "direction": data["Organize Plate"]['direction'][count.value],"control": data["Organize Plate"]['control'][count.value],"row": data["Organize Plate"]['well_row'][count.value], "col": data["Organize Plate"]['well_column'][count.value], "primer": data["Organize Plate"]['primer'][count.value]})%}
+  {%endif%}
+    {% set count.value = count.value + 1%}
+{%endfor%}
+
+
+<script type="text/javascript">
+      var primer_list = {{data["Primer List"]|safe}}
+      var color_list = []
+      var color_dict = {}
+      var primertlist = {}
+    $(document).ready(function()
+      {
+          $('#primerInput').hide()
+          console.log(primer_list)
+          var cur_ps = 0
+          var num = ""
+          var det =  ""
+          console.log(primer_list)
+          $.each(primer_list["pair_set"], function(i, obj){
+            if (cur_ps == obj){
+              num = num + primer_list["primer_num"][i] + ","
+              $("#primersearch").append("<option pairset = " + cur_ps + " value = 'Numbers: " + num + " " + det  + "'>")
+              primertlist[cur_ps] = "Numbers: " + num + " " + det
+              num = ""
+              det = ""
+            } else {
+              cur_ps = obj
+              num = num + primer_list["primer_num"][i] + ","
+              if (det == ""){
+                det = "Gene: " + primer_list["gene"][i] 
+              }
+              if (primer_list["M13"][i] == 1) {
+                det = det + ", M13"
+              }
+            }
+          })
+
+        var primerdict = {{data["Plate Primers"]| safe}}
+        
+        $.each(primerdict["primer"], function(i, obj){
+            $("#primerInput").val(primertlist[obj]);
+            $("#primerInput").focusout()
+            $("#primerInput").val("");
+        })    
+
+      var sampdict = {{sampjs|safe}};
+
+
+      console.log("LOAD")
+      console.log(sampdict)
+      for (const [ key, value ] of Object.entries(sampdict)) {
+          // do something with `key` and `value`
+          var mykey = key.split("-")[0]
+          if (value['row'] != "" & value['col'] != ''){
+            console.log(key, value)
+            var to = $("td[col = " + value['col'] + "][row = " + value['row'] + "]")
+            if(value['control'] != ''){
+              var from = $(".row span:Contains(" + value['control'] + ")")
+              droptable(from, to, mykey)
+              focusout_control(to.children().children("div input"))
+            } else{
+              var from = $(".row span[sampid='" + mykey + "']")
+              droptable(from, to, mykey)
+            }
+            console.log(value['primer'])
+            if (value['primer']!= "") {
+              console.log(mykey)
+              var from = $("span[id=pname][pairset=" +  value["primer"] + "]").parents("span.primer")
+              droptable(from, to)
+            }
+          }
+          if (value['direction']!='') {
+            changedir = $("td[col = " + value['col'] + "][row = " + value['row'] + "]").children('span')
+            setDirection(changedir, value['direction'])
+          }
+          
+      }
+      
+      
+      setInterval( save, 5000 ); // in ms 
+      });
+
+ 
+
+      function set_color() {
+        if (color_list.length == 0){
+          color_list.push(15)
+          console.log("hellow")
+        } else{
+          color_list.push(color_list[color_list.length - 1] + 67)
+        }
+        return({"base": "hsla("+color_list[color_list.length - 1]+", 72%, 60%, 1)", "rev": "hsla("+color_list[color_list.length - 1]+", 72%, 40%, 1)", "fwd": "hsla("+color_list[color_list.length - 1]+", 72%, 80%, 1)"})
+      }
+
+      function save(){
+        console.log("SAVE")
+              var form = $("form#autosave")
+              var ps = ""
+              $("td").children("span").each(function(i, obj) {
+                if ($(obj).attr("pairset")!== undefined){
+                  ps = $(obj).attr("pairset")
+                } else {
+                  ps = ""
+                }
+                if ($(obj).hasClass("samp")) {
+                  var direction = ""
+                  if($(obj).children("div").children("button").text().trim().includes("→")) {
+                    direction = "forward"
+                  } else if ($(obj).children("div").children("button").text().trim().includes("←")){
+                    direction = "backward"
+                  }
+                  $('<input>').attr({
+                      type: 'hidden',
+                      id: obj.getAttribute("id") + "-" + obj.getAttribute("count") + "samp" + "-" + direction,
+                      name: $.trim($(obj).attr("sampid")) + "-" + obj.getAttribute("count")  +  obj.getAttribute("id") + "-" + direction + "-" + ps,
+                      value: obj.parentElement.getAttribute("row") +"-" + obj.parentElement.getAttribute("col")
+                  }).appendTo(form);
+                } else {
+                  $('<input>').attr({
+                      type: 'hidden',
+                      id: obj.getAttribute("id")  + "control",
+                      name: $.trim($($(obj).contents()[0]).text()) + "-" +  obj.getAttribute("id") + "-" + ps,
+                      value: obj.parentElement.getAttribute("row") +"-" + obj.parentElement.getAttribute("col")
+                  }).appendTo(form);
+                }
+              }
+              )
+              $(".samplerow").children("div").each(function(i, obj) {
+                var samp = $(obj).children("span.samp")
+                  $('<input>').attr({
+                      type: 'hidden',
+                      id: obj.getAttribute("id") + "-0" + "samp" + "-" ,
+                      name: $.trim(samp.attr("sampid")) + "-" +  samp.attr("id") + "--" ,
+                      value:"0-0" 
+                  }).appendTo(form);
+              })
+              $("div.primerrow span#pname").each(function(i, obj) {
+                  var primerps = $(obj).attr("pairset")
+                  $('<input>').attr({
+                      type: 'hidden',
+                      id: "primer" + primerps,
+                      name:  "primer" + primerps,
+                      value:  primerps
+                  }).appendTo(form);
+              }  ) 
+              console.log(form.serializeArray())
+              $.ajax({
+                type: "POST", 
+                url: "/plate_organize", 
+                data: form.serializeArray(), 
+                success: function() {
+                  form.children().each(function(i,obj){
+                    if (obj.getAttribute("name") != "plate"){
+                      obj.remove()
+                    }
+                  })
+                }
+              })
+      }
+
+    $(document).on('dblclick', '.samplerow span.samp', function() {
+      $("td #" + $(this).attr("id")).each(function(i, obj) {
+        obj.remove()
+        }); 
+        $(this).removeClass("samp-disabled")
+        $(this).removeAttr("count")
+    });
+    $(document).on('click', '.reset_button button', function() {
+      $("td").children("span").each(function(i, obj) {
+          var dropdiv = $(".sample-list")
+          return_sample($(obj), dropdiv)
+        }); 
+    });
+
+    $(document).on('click', '.save_button button', function() {
+      save()
+    });
+     $(document).on('click', '#act', function() { 
+      $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+      $(this).parents(".dropdown").find('.btn').attr("id", "forward")
+      //if ($(this).parents("td").children("span").attr("primer-val")){
+      //  $(this).parents("td").css("background-color", color_dict[$(this).parents("td").children("span").attr("primer-val")]["fwd"])
+      //}
+    });
+     $(document).on('click', '#bac', function() { 
+      $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+      $(this).parents(".dropdown").find('.btn').attr("id", "backward")
+      //if ($(this).parents("td").children("span").attr("primer-val")){
+      //  $(this).parents("td").css("background-color", color_dict[$(this).parents("td").children("span").attr("primer-val")]["rev"])
+      //}
+    });
+    function setDirection(item, direction) {
+      
+      if (direction == 'forward') {
+        item.children(".dropdown").find('.btn').html('→ <span class="caret"></span>');
+        item.children(".dropdown").find('.btn').attr("id", "forward")
+      } else {
+        item.children(".dropdown").find('.btn').html('← <span class="caret"></span>');
+        item.children(".dropdown").find('.btn').attr("id", "backward")
+        
+      }
+    }
+    $( function() {
+        $(".row .samp").draggable({
+            revert: "invalid",
+            helper: "clone", 
+            drag: function (event, ui) {
+                ui.helper.addClass("draggable");
+                return !$(ui.helper).hasClass('samp-disabled');
+            },
+            start: function (event, ui) {
+                $context = ui.helper.parent();
+            },
+            stop: function (event, ui) {
+            }
+            });
+    } );
+    $( function() {
+        $("td .samp").draggable({
+            revert: "invalid",
+            drag: function (event, ui) {
+                ui.helper.addClass("draggable");
+            },
+            start: function (event, ui) {
+                $context = ui.helper.parent();
+            },
+            stop: function (event, ui) {
+            }
+            });
+    } );
+
+
+    $( function() {
+        $(".row .control").draggable({
+            revert: "invalid",
+            helper: "clone", 
+            drag: function (event, ui) {
+                ui.helper.addClass("draggable");
+            },
+            start: function (event, ui) {
+                $context = ui.helper.parent();
+            },
+            stop: function (event, ui) {
+            }
+            });
+    } );
+
+  
+    $( function() {
+        $("td .control").draggable({
+            revert: "invalid",
+            drag: function (event, ui) {
+                ui.helper.addClass("draggable");
+            },
+            start: function (event, ui) {
+                $context = ui.helper.parent();
+            },
+            stop: function (event, ui) {
+            }
+            });
+    } );
+
+    $( function() {
+        $(".sample-list").droppable({
+            
+          drop: function (event, ui) {
+                  ui.helper.data('dropped', true);
+                  var item = ui.helper
+                  var dropdiv = $(this)
+                  return_sample(item, dropdiv)
+          }
+            
+        });
+    } );
+    function return_sample(item, dropdiv) {
+
+      var par = dropdiv.find("#"+ item.attr("id"));
+          if (!item.hasClass("contedit")) {
+
+            if (par.attr("count") == "1") {
+                par.removeAttr("count");
+              } else {
+                par.attr("count", "1")
+                par.removeClass("samp-disabled")
+              }
+              par.draggable("enable");
+              item.remove()
+              dropdiv.removeClass("ui-droppable")
+            } else {
+              $("td div." + item.attr("id")).remove()
+              $("td span#" + item.attr("id")).remove()
+            }
+            if (par.attr("count") == "1") {
+              par.removeAttr("count");
+            } else {
+              par.attr("count", "1")
+              par.removeClass("samp-disabled")
+            }
+            par.draggable("enable");
+            item.remove()
+            dropdiv.removeClass("ui-droppable")   
+        if (item.attr("primer-val") !== undefined){
+          $("td").each(function(idx, cell){
+            if ($(cell).css("background-color") !== 'rgba(0, 0, 0, 0)'){
+              if($(cell).children().length ==  0){
+                $(cell).css("background-color", "")
+              }
+            }
+          })
+        }        
+    }
+    jQuery.expr[':'].Contains = function(a, i, m) {
+      return jQuery(a).text().toUpperCase()
+          .indexOf(m[3].toUpperCase()) >= 0;
+    };
+
+
+    $(window).on('load', function(){
+      
+    });
+    
+    function addPrimer(draggable, droppable, inside = "") { 
+      if (droppable.children().length > 0) {
+        var samp = droppable.find("span")
+        //if ($(samp).parents("td").find("#forward").length > 0) {
+        //  droppable.css("background-color", color_dict[$.trim(draggable.children("span#pname").text())]["fwd"])
+        //} else if ($(samp).parents("td").find("#backward").length > 0) {
+        //  droppable.css("background-color", color_dict[$.trim(draggable.children("span#pname").text())]["rev"])
+        //} else {
+        var primer = $.trim(draggable.children("span#pname").text())
+        droppable.css("background-color", "")
+        if (primer == "Erase") {
+          $(samp).each(function(i, obj){
+            $(obj).removeAttr("primer-val")
+            $(obj).removeAttr("pairset")
+          })
+        } else {
+          droppable.css("background-color", color_dict[$.trim(draggable.children("span#pname").text())]["base"])
+          //}
+          $(samp).each(function(i, obj){
+            $(obj).attr("primer-val", $.trim(draggable.children("span#pname").text()))
+            console.log(draggable.children("span#pname"))
+            $(obj).attr("pairset", $.trim(draggable.children("span#pname").attr("pairset")))
+          })
+        }
+      }
+    }
+    function droptable(draggable, droppable, inside = "") {
+          if (draggable.hasClass("primer")) {
+            addPrimer(draggable, droppable, inside)
+            return
+          } 
+          console.log(droppable.children().length)
+          if(draggable.attr("primer-val")){
+            console.log($(draggable).parents().css("padding"))
+            $(droppable).css("background-color", $(draggable).parents().css("background-color"))
+            $(draggable).parents().css("background-color", "")
+          }
+            if (draggable.hasClass("clone")) {
+              var drag = $('.droppable').has(draggable).length ? draggable : draggable.draggable({
+                revert: "invalid",
+                start: function(event, ui) {
+                }
+              });
+              drag.parents("td").children().each(function(i, obj) {
+                var dropped = droppable.append($(obj)).children(":last-child");
+                dropped.children().each(function(i2,obj2){
+                  $(obj2).css({
+                  top: "0em",
+                  left: "0em"
+                });
+                })
+                dropped.attr("count", draggable.attr("count"))
+                dropped.css({
+                  top: "0em",
+                  left: "0em"
+                });
+              })
+            } else{
+              var drag = $('.droppable').has(draggable).length ? draggable : draggable.clone().draggable({
+                revert: "invalid",
+                start: function(event, ui) {
+                  ui.helper.addClass("clone")
+                }
+              });
+              drag.addClass("clone")
+              if (!draggable.hasClass("control")){
+                drag.append(chooseDir())
+                if (draggable.attr("count") != undefined){
+                    draggable.attr("count", "2");
+                    draggable.attr("sampid", drag.attr("sampid"))
+                    //draggable.draggable("disable");
+                    draggable.addClass("samp-disabled")
+                  } else{
+                    draggable.attr("count", "1");
+                } 
+                var dropped = droppable.append(drag).children("span:last-child");
+                dropped.attr("count", draggable.attr("count"))
+                dropped.css({
+                  top: "0em",
+                  left: "0em"
+                });
+              } else {
+                if (inside == ""){
+                  if (draggable.attr("count") != undefined){
+                    draggable.attr("count", (parseInt(draggable.attr("count"))+1).toString());
+                  } else{
+                    draggable.attr("count", "1");
+                }
+                if (draggable.text().trim() == "POSCON"){
+                  var dropped = droppable.append('<div class="control input-group mb-2 poscon-' +  draggable.attr("count") + '"><div class="input-group-prepend">\
+            <div class="input-group-text">+</div>\
+          </div><input type="text" class = "form-control control" name="poscon" ' + 
+                      '" id="poscon-' +  draggable.attr("count") + '" value="" ></div>').children("input:last-child");
+                      droppable.children("div.control").append('<span hidden class = "contedit clone" id="poscon-' +  draggable.attr("count") + '" count = "' + draggable.attr("count") + '">' + draggable.val() + "</span>")
+                      droppable.append('<span hidden class = "contedit" id="poscon-' +  draggable.attr("count") + '" count = "' + draggable.attr("count") + '">' + draggable.val() + "</span>")
+                } else if (draggable.text().trim() == "NTC"){
+                   var dropped = droppable.append('<div class="control input-group mb-2 ntc-' +  draggable.attr("count") + '"><div class="input-group-prepend">\
+            <div class="input-group-text">-</div>\
+          </div><input type="text" class = "form-control control" name="ntc" ' + 
+                      '" id="ntc-' +  draggable.attr("count") + '" value="" ></div>').children("input:last-child");
+                      droppable.children("div.control").append('<span hidden class = "clone contedit"  id="ntc-' +  draggable.attr("count") + '" count = "' + draggable.attr("count") + '">' + draggable.val() + "</span>")
+                      droppable.append('<span hidden class = "contedit"  id="ntc-' +  draggable.attr("count") + '" count = "' + draggable.attr("count") + '">' + draggable.val() + "</span>")
+                } else {
+                   var dropped = droppable.append('<div class="control input-group mb-2 wtc-' +  draggable.attr("count") + '"><div class="input-group-prepend">\
+            <div class="input-group-text">-</div>\
+          </div><input type="text" class = "form-control control" name="wtc" ' + 
+                      '" id="wtc-' +  draggable.attr("count") + '" value="" ></div>').children("input:last-child");
+                      droppable.children("div.control").append('<span hidden class = "clone contedit"  id="wtc-' +  draggable.attr("count") + '" count = "' + draggable.attr("count") + '">' + draggable.val() + "</span>")
+                      droppable.append('<span hidden class = "contedit"  id="wtc-' +  draggable.attr("count") + '" count = "' + draggable.attr("count") + '">' + draggable.val() + "</span>")
+                }
+                dropped.attr("count", draggable.attr("count"))
+                dropped.css({
+                  top: "0em",
+                  left: "0em"
+                });
+                $("span.contedit").draggable({
+                  revert: "invalid",
+                  drag: function (event, ui) {
+                      ui.helper.addClass("control");
+                  },
+                  start: function (event, ui) {
+                      $context = ui.helper.parent();
+                  },
+                  stop: function (event, ui) {
+                  }
+                  });
+                } else {
+                  if (draggable.attr("count") != undefined){
+                    draggable.attr("count", (parseInt(draggable.attr("count"))+1).toString());
+                  } else{
+                    draggable.attr("count", "1");
+                }
+                if (draggable.text().trim() == "POSCON"){
+                  var dropped = droppable.append('<div class="control clone input-group mb-2 poscon-' +  draggable.attr("count") + '"><div class="input-group-prepend">\
+            <div class="input-group-text">+</div>\
+          </div><input type="text" class = "form-control control" name="poscon" ' + 
+                      '" id="poscon-' +  draggable.attr("count") + '" value="' + inside + '" ></div>').children("input:last-child");
+                      droppable.children("div.control").append('<span hidden class = "clone contedit" id="poscon-' +
+                      draggable.attr("count") + '" count = "' + draggable.attr("count") + '">' + draggable.val() + inside + "</span>")
+                      droppable.append('<span hidden class = "contedit" id="poscon-' + 
+                      draggable.attr("count") + '" count = "' + draggable.attr("count") + '">' + draggable.val() + inside + "</span>")
+                } else{
+                
+                  var dropped = droppable.append('<div class="control clone input-group mb-2 ntc-' +  draggable.attr("count") + '"><div class="input-group-prepend">\
+            <div class="input-group-text">-</div>\
+          </div><input type="text" class = "form-control control" name="ntc" ' + 
+                      '" id="ntc-' +  draggable.attr("count") + '" value="' + inside + '" ></div>').children("input:last-child");
+                      droppable.children("div.control").append('<span hidden class = "clone contedit" id="ntc-' +
+                      draggable.attr("count") + '" count = "' + draggable.attr("count") + '">' + draggable.val() + inside + "</span>")
+                      droppable.append('<span hidden class = "contedit" id="ntc-' + 
+                      draggable.attr("count") + '" count = "' + draggable.attr("count") + '">' + draggable.val() + inside + "</span>")
+                      }
+                dropped.attr("count", draggable.attr("count"))
+                dropped.css({
+                  top: "0em",
+                  left: "0em"
+                });
+                $("span.contedit").draggable({
+                  revert: "invalid",
+                  drag: function (event, ui) {
+                      ui.helper.addClass("control");
+                  },
+                  start: function (event, ui) {
+                      $context = ui.helper.parent();
+                  },
+                  stop: function (event, ui) {
+                  }
+                  });
+                }
+                
+              }
+            }
+    }
+    $( function() {
+        $('td').droppable({
+        accept: function(drop_elem){
+          if ($(this).children().length == 0){
+            return(true)
+          } else if (drop_elem.hasClass("primer")){
+            return(true)
+          } else {
+            return(false)
+          }
+        },
+        drop: function (event, ui) {
+          var droppable = $(this);
+          var draggable = ui.draggable;
+          // Move draggable into droppable
+          droptable(draggable, droppable)
+        }
+      })
+    })
+
+    $( function() {
+        $('.assign-all').droppable({
+        drop: function (event, ui) {
+
+          $.each($("td"), function(idx, obj){
+             if ($(obj).children().length>0){
+               droptable($(ui.draggable), $(obj))
+             }
+          })
+        }
+      })
+    })
+
+    $( function() {
+        $('.assign-empty').droppable({
+        drop: function (event, ui) {
+
+          $.each($("td"), function(idx, obj){
+             if ($(obj).children().length>0){
+              if($(obj).css("background-color")=="rgba(0, 0, 0, 0)"){
+                droptable($(ui.draggable), $(obj))
+              }
+             }
+          })
+        }
+      })
+    })
+
+    $(document).on("focusout", "input.control", function(){
+      focusout_control($(this))
+    })
+
+    function focusout_control(control){
+      control.parent("div.control").children("span").text(control.val())
+      control.parent("div.control").children("span").removeAttr("hidden")     
+      control.parent("div.control").parent("td").children("span").text(control.val())
+      control.attr("value", control.val())
+
+      control.hide()
+    }
+
+    $(document).on("dblclick", "div.control", function(){
+      $(this).children("input").show()
+      $(this).children("span").attr("hidden", "")
+      $(this).children("input").focus()
+    })
+
+    $(document).on("dblclick", "span.primer", function(){
+
+      var curprimer = $(this).clone(true)
+      $(".primerrow").append(curprimer)
+      $(curprimer).removeClass("primer-box")
+      $(curprimer).addClass("primer-drag")
+      console.log(curprimer)
+      $(document).mousemove(function (e) {
+          $(curprimer).offset({ top: e.pageY, left: e.pageX });
+      }).click(function (click) {
+          var targ = $(click["target"])
+          if(targ.is("td")) {
+            addPrimer(curprimer, targ)
+          } else if (targ.parents("td").length > 0){
+            addPrimer(curprimer, $(targ.parents("td")[0]))
+          } else if (targ.parents("table")){ 
+            console.log(click)
+            console.log(targ.parents("td"))
+            curprimer.remove()
+          }
+    });
+   })
+
+    $(document).on("click", "#addprimer", function(){
+      $('#primerInput').show();
+      $('#primerInput').focus()
+    })
+
+    $(document).on("focusout", "#primerInput", function(){
+      var pname = $(this).val()
+      if ((pname == "") | (pname in color_dict)) {
+        $(this).val("")
+        $(this).hide()
+        return
+      }
+      var pset = 0
+      $.each($("datalist option"), function(i, obj){
+            if (obj.value === pname) {
+              pset = $(obj).attr("pairset")
+            }
+          })
+      color_dict[pname] = set_color()
+      $(".primerrow").append("<div class = \"col-sm-2\">\
+            <span class = 'primer primer-box' style = 'background-color:" + color_dict[pname]["base"] +"'>\
+        <span pairset = " + pset + " id = pname>" + pname + "</span>\
+        </span> </div>")
+      $(this).val("")
+      $(this).hide()
+      //$(".primerrow .primer #rev_primer").last().css("color", color_dict[pname]["rev"])
+      //$(".primerrow .primer #fwd_primer").last().css("color", color_dict[pname]["fwd"])
+      $(".primerrow .primer").draggable({
+            revert: "invalid",
+            helper: "clone", 
+            drag: function (event, ui) {
+                ui.helper.addClass("draggable");
+            },
+            start: function (event, ui) {
+                $context = ui.helper.parent();
+                ui.helper.text("")
+                ui.helper.removeClass("primer-box")
+                ui.helper.addClass("primer-drag")
+            },
+            cursorAt: { top: 17, left: 17 }, 
+            stop: function (event, ui) {
+            }
+            });
+    })
+
+    $(document).on("keypress", "input.control", function(event) {
+        if (event.key == "Enter") {
+          $(this).focusout()
+        }
+    })
+
+    $(document).on("keypress", "#primerInput", function(event) {
+        if (event.key == "Enter") {
+          $(this).focusout()
+        } 
+    })
+
+    $(document).on("input", "#primerInput", function(event) {
+          var val = $("#primerInput").val();
+          var opts = $('#primersearch').children();
+          console.log(val)
+          $.each(opts, function(i, obj){
+            if (obj.value === val) {
+              // An item was selected from the list!
+              // yourCallbackHere()
+              $("#primerInput").focusout()
+              return
+            }
+          })
+    })
+
+
+
+    $(document).on("click", "#printrep", function(event){
+      var pwindow = window.open("/plate_report?plate_id=t1")
+      pwindow.focus();
+      pwindow.setTimeout(function() { 
+      pwindow.printplate();
+      }, 1000);
+    })
+    
+
+    function chooseDir() {
+        $select = '<div class="dropdown">\
+  <button style = "display: inline" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">\
+    \
+  </button>\
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">\
+    <li><button id = "act" class="dropdown-item" type="button">&#8594;</button></li>\
+    <li><button id = "bac" class="dropdown-item" type="button">&#8592;</button></li>\
+  </ul>\
+</div>';
+    return($select);
+    }
+
+</script>
+{% set plate_data = data["Plate Report"] %}
+
+<div class=container-fluid>
+<hr class="mt-2 mb-3"/>
+<div class=container-fluid>
+  <div class = row id = heading>
+    <div class = "col-md-4 text-center"><div id = "printable"><h1>Plate: {{plate_data["plate_id"][0]}}</h1></div></div>
+
+    <div class = "col-md-2">
+      <button class="btn btn-primary" id = "printrep">Print Plate</button>
+    </div>
+    <div class = "col-md-2">
+      {{plate_data["build_plate"][0]|safe}}
+    </div>
+  <div class = "col-md-2">
+    {{plate_data["plate_report"][0]|safe}}
+  </div>
+ </div>
+
+</div>
+<hr class="mt-2 mb-3"/>
+
+<div class = "container-fluid sample-list">
+
+  <div class = "row">
+    <div class = "col-md-12">
+      <p class = "rowhead">
+        Sample List
+      </p>
+    </div>
+  </div>
+  <div class = "row samplerow">
+
+  {% set count = namespace(value=0)%}
+  {% for samp in samporg %} 
+    
+  {% if samporg[samp]['control'] == "" %}
+    
+      <div class = "col-sm-2">
+        <span class = "samp" id = "s{{count.value}}" sampid = {{samp}}>
+          {{samporg[samp]["btid"]}}
+        </span>
+    </div>
+    {%endif%}
+    {% set count.value = count.value + 1%}
+  {%endfor%}
+ 
+
+    </div>
+    <hr>
+    <div class = "row">
+      <div class = "col-md-12">
+        <p class = "rowhead">
+          Controls
+        </p>
+      </div>
+    </div>
+    <div class = "row controlrow">
+
+          <div class = "col-sm-2">
+            <span class = "control" id = "ntc">
+                NTC
+            </span>
+        </div>
+        <div class = "col-sm-2">
+          <span class = "control" id = "poscon">
+              POSCON
+          </span>
+        </div>
+        <div class = "col-sm-2">
+          <span class = "control" id = "WTC">
+              WTC
+          </span>
+        </div>
+    </div>
+
+<hr>
+    <div class = "row">
+      <div class = "col-md-12">
+        <p class = "rowhead">
+          Primers <input class="hide" list="primersearch" type="text" id="primerInput" value="" /> 
+          <datalist id="primersearch"></datalist> <input class="btn btn-primary primer" type="button" value="+" id = "addprimer">
+         </p>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class = "col-md-6" style="padding-bottom:15px; text-align: right;">
+        <div class="assign-all" style="padding: .375rem .75rem;display: inline-block;border: 1px;border-radius: 2px;border-color: black;border-style: solid;font-size: 1rem;vertical-align: middle;line-height: 1.5;">Assign To All</div>
+      </div>
+      <div class = "col-md-6" style="padding-bottom:15px; text-align: left;">
+        <div class="assign-empty" style="padding: .375rem .75rem;display: inline-block;border: 1px;border-radius: 2px;border-color: black;border-style: solid;font-size: 1rem;vertical-align: middle;line-height: 1.5;">Assign To Empty</div>
+      </div>
+    </div>
+
+    <div class = "row primerrow">
+      <div class="col-sm-2">            
+        <span class="primer primer-box  primer-erase ui-draggable ui-draggable-handle">        
+          <span  id="pname">Erase</span>        
+        </span> 
+      </div>
+    </div>
+
+</div>
+
+{% set letters = ["", "A", "B", "C", "D", "E", "F", "G", "H"]%}
+
+<div class = "container save_button text-center"> 
+<button type = button class = "btn" id = "save_button" style="border-width: 1px;border-color: black;margin: 5px;" >SAVE</button>
+</div>
+<div class = "container-fluid">
+<table class="table plate">
+  {% set head = TRUE %}
+  {% set count = namespace(value=0)%}
+  {%for row in range(9)%}
+    {% if row == 0%}
+      <thead>
+        <tr>
+        {%for col in range(13)%}
+          {% if col == 0%}
+            <th scope="col" class = "rowhead"></th>
+          {%else %}
+            <th scope="col" class = "maincol">{{col}}</th>
+          {%endif%}
+        {%endfor%}
+      </tr>
+      </thead>
+      {%set head = FALSE%}
+    {%else %}
+      {% if count.value == 1%}
+        <tbody>
+      {%endif%}
+      <tr>
+      {%for col in range(13)%}
+        {% if col == 0%}
+        <th scope="row">{{letters[count.value]}}</td>
+        {%else %} 
+
+        <td id = "dropcell" col = "{{col}}" row = "{{count.value}}">
+         </td>
+        {%endif%}
+      {%endfor%}
+      </tr>
+      {%if count.value == 8%}
+        </tbody>
+      {%endif%}
+    {%endif%}
+    {% set count.value = count.value + 1 %}
+  {%endfor%}
+  
+    </table>
+  </div>
+    <div class = "container reset_button text-center">
+      <button type = button class = "btn" id = "reset_button" >RESET</button>
+    </div>
+    <form id = "autosave" method = "post" action = "">
+      <input type = "hidden" name = "plate" value = "{{args['plate_id']}}">
+    </form>
+    <form id = "primersave" method = "post" action = "">
+    </form>
+</div>
+    {%endblock%}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class = row>
+	<div class = col-md-12>
+		<center><h1>Welcome {{current_user.username}}</h1></center>
+	</div>
+</div>
+
+<div class="container">
+	<div class = row>
+	<form class="form-signin" method= "POST" action ="/settings_admin">
+		<h2 class="form-signin-heading">Change Password</h2>
+	   {{ form.hidden_tag()}}
+	   {{ wtf.form_field(form.password) }}
+	   {{ wtf.form_field(form.confpassword) }}
+	   <hr>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Change Password</button>
+	  </form>
+	</div>
+
+	<div class = row>
+		<form class="form-adduser" method= "POST" action ="/settings_admin">
+			<h2 class="form-adduser-heading">Add User</h2>
+			{{ adduserform.hidden_tag() }}
+			{{ wtf.form_field(adduserform.username) }}
+			{{ wtf.form_field(adduserform.firstname) }}
+			{{ wtf.form_field(adduserform.lastname) }}
+			{{ wtf.form_field(adduserform.role) }}
+			{{ wtf.form_field(adduserform.password) }}
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Add User</button>
+		  </form>
+		</div>
+	
+</div>
+
+{%endblock%}

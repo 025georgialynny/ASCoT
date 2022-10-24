@@ -1,0 +1,551 @@
+{
+  "well_row": {
+    "prettyname": "Well Row",
+    "required_vars": {},
+    "item": {
+      "type": "basic_input",
+      "args": {
+        "input_type": "number"
+      }
+    }
+  },
+  "well_column": {
+    "prettyname": "Well Column",
+    "required_vars": {},
+    "item": {
+      "type": "basic_input",
+      "args": {
+        "input_type": "number"
+      }
+    }
+  },
+  "build_plate": {
+    "pretty_name": "Select Plate",
+    "required_vars": {},
+    "item": {
+      "type": "button_link",
+      "args": {
+        "text": "Build Plate",
+        "href": "/build_plate?plate_id={plate_id}",
+        "argument": ["href"]
+      }
+    }
+  },
+  "plate_report": {
+    "pretty_name": "Select Plate",
+    "required_vars": {},
+    "item": {
+      "type": "button_link",
+      "args": {
+        "text": "View Plate Report",
+        "href": "/plate_report?plate_id={plate_id}",
+        "argument": ["href"]
+      }
+    }
+  },
+  "sequenced_plate_report": {
+    "pretty_name": "Select Plate",
+    "required_vars": {},
+    "item": {
+      "type": "button_link",
+      "args": {
+        "text": "View Plate Report",
+        "href": "/sequenced_plate?plate_id={plate_id}",
+        "argument": ["href"]
+      }
+    }
+  },
+  "clinvar": {
+    "pretty_name": "ClinVar",
+    "required_vars": {},
+    "item": {
+      "type": "button_link",
+      "args": {
+        "text": "ClinVar Link",
+        "href": "https://www.ncbi.nlm.nih.gov/clinvar/variation/{clinvar}",
+        "argument": ["href"]
+      }
+    }
+  },
+  "lot_number": {
+    "pretty_name": "Lot Number",
+    "required_vars": {},
+    "item": {
+      "type": "basic_input",
+      "args": {
+        "input_type": "text"
+      }
+    }
+  },
+  "cdot": {
+    "pretty_name": "CDOT",
+    "required_vars": {},
+    "item": {
+      "type": "static",
+      "args": {
+      }
+    }
+  },
+  "pdot": {
+    "pretty_name": "PDOT",
+    "required_vars": {},
+    "item": {
+      "type": "static",
+      "args": {
+      }
+    }
+  },
+  "NM": {
+    "pretty_name": "NM#",
+    "required_vars": {},
+    "item": {
+      "type": "static",
+      "args": {
+      }
+    }
+  },
+  "obs_cdot": {
+    "pretty_name": "Observed CDOT",
+    "required_vars": {},
+    "item": {
+      "type": "basic_input",
+      "args": {
+        "input_type": "text"
+      }
+    }
+  },
+  "obs_pdot": {
+    "pretty_name": "Observed PDOT",
+    "required_vars": {},
+    "item": {
+      "type": "basic_input",
+      "args": {
+        "input_type": "text"
+      }
+    }
+  },
+  "obs_NM": {
+    "pretty_name": "Observed NM",
+    "required_vars": {},
+    "item": {
+      "type": "basic_input",
+      "args": {
+        "input_type": "text"
+      }
+    }
+  },
+  "expirationDate": {
+    "pretty_name": "Expiration Date",
+    "required_vars": {},
+    "item": {
+      "type": "basic_input",
+      "args": {
+        "input_type": "text"
+      }
+    }
+  },
+  "organize_plate": {
+    "pretty_name": "Select Plate",
+    "required_vars": {},
+    "item": {
+      "type": "button_link",
+      "args": {
+        "text": "Organize Plate",
+        "href": "/plate_organize?plate_id={plate_id}",
+        "argument": ["href"]
+      }
+    }
+  },
+  "design_plate": {
+    "pretty_name": "Select Plate",
+    "required_vars": {},
+    "item": {
+      "type": "button_link",
+      "args": {
+        "text": "Design Plate",
+        "href": "/plate_organize?plate_id={plate_id}",
+        "argument": ["href"]
+      }
+    }
+  },
+  "plate_id": {
+    "prettyname": "Plate ID",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {
+      }
+    }
+  },
+  "plate_rows": {
+    "prettyname": "Plate Rows",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "plate_columns": {
+    "prettyname": "Plate Columns",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "assignee": {
+    "prettyname": "Assignee",
+    "required_vars": {},
+    "item": {
+      "type": "select_dropdown",
+      "args": {
+        "item_list": []
+      }
+    }
+  },
+  "comment": {
+    "prettyname": "Status",
+    "required_vars": {},
+    "item": {
+      "type": "textarea_list",
+      "args": {}
+    }
+  },
+  "file": {
+    "prettyname": "File",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+
+  "action": {
+    "prettyname": "Action",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "user": {
+    "prettyname": "user",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "timestamp": {
+    "prettyname": "Timestamp",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+
+  "sample_name": {
+    "prettyname": "Sample Name",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "rsid": {
+    "prettyname": "rsID",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "chromosome": {
+    "prettyname": "Chromosome",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "hg38": {
+    "prettyname": "HG38",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "gene": {
+    "prettyname": "Gene",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "btid": {
+    "prettyname": "BTID",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "sex": {
+    "prettyname": "Sex",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "race": {
+    "prettyname": "Race",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "ethnicity": {
+    "prettyname": "Ethnicity",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "mrn": {
+    "prettyname": "MRN",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "flow_cell_id": {
+    "prettyname": "Flow Cell ID",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "sequencing_date": {
+    "prettyname": "Sequencing Date",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "RackID": {
+    "prettyname": "Rack ID",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "ship_date": {
+    "prettyname": "Ship Date",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "regeneron_ID": {
+    "prettyname": "Regeneron ID",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "instrumentid": {
+    "prettyname": "Instrument ID",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "RGC_A1": {
+    "prettyname": "Allele 1 Imputation",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "RGC_A2": {
+    "prettyname": "Allele 2 Imputation",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "CLN_A1": {
+    "prettyname": "Allele 1 Clinical Annotation",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "CLN_A2": {
+    "prettyname": "Allele 2 Clinical Annotation",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "CLNHGVS": {
+    "prettyname": "",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "CLNSIG": {
+    "prettyname": "",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "CLNREVSTAT": {
+    "prettyname": "",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "ACMG": {
+    "prettyname": "",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "inheritance": {
+    "prettyname": "",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "CLNDBN": {
+    "prettyname": "",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "OMIM_Phenotype": {
+    "prettyname": "",
+    "required_vars": {},
+    "item": {
+      "type": "",
+      "args": {}
+    }
+  },
+  "primer": {
+    "prettyname": "Primer",
+    "required_vars": {},
+    "item": {
+      "type": "basic_input",
+      "args": {}
+    }
+  },
+  "primer_status": {
+    "prettyname": "Primer Status",
+    "required_vars": {},
+    "item": {
+      "type": "select_dropdown",
+      "args": {
+          "item_list": ["", "Not Ordered", "Ordered", "In Stock"]
+      }
+    }
+  },
+  "eligibility": {
+    "prettyname": "Eligibility",
+    "required_vars": {},
+    "item": {
+      "type": "select_dropdown",
+      "args": {
+        "item_list": ["", "Eligible", "Ineligible"]
+      }
+    }
+  },
+  "approval": {
+    "prettyname": "Approval",
+    "required_vars": {},
+    "item": {
+      "type": "select_dropdown",
+      "args": {
+        "item_list": ["", "Approve", "Fail"]
+      }
+    }
+  },
+  "confirmed": {
+    "prettyname": "Confirmed",
+    "required_vars": {},
+    "item": {
+      "type": "select_dropdown",
+      "args": {
+          "item_list": ["", "Yes", "No"]
+      }
+    }
+  },
+  "signed_out": {
+    "prettyname": "Signed Out",
+    "required_vars": {},
+    "item": {
+      "type": "select_dropdown",
+      "args": {
+          "item_list": ["", "Yes", "No"]
+      }
+    }
+  },
+  "target_region": {
+    "prettyname": "Target Region",
+    "required_vars": {},
+    "item": {
+      "type": "basic_input",
+      "args": {
+      }
+    }
+  },
+  "assign": {
+    "prettyname": "Assign",
+    "required_vars": {},
+    "item": {
+      "type": "select_dropdown",
+      "args": {
+        "item_list": ["{users}"]
+      }
+    }
+  },
+  "select_sample": {
+    "prettyname": "Select Sample",
+    "required_vars": {},
+    "item": {
+      "type": "select_item",
+      "args": {
+        
+      }
+    }
+  }
+}

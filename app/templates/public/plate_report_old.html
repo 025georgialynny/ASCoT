@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<script type="text/javascript">
+    var tables = {}
+
+    $(document).ready(function()
+      {
+        page_data = page_data()
+        var ttables = []
+        var keys = []
+        //$.each(page_data, function(k,v){
+          //ttables.push(getData(v))
+          //keys.push(k)
+        //})
+        //$.when(...ttables).done(function(){
+          //after_ajax(arguments, keys)
+        //})
+        
+          //save();
+      });
+
+    function after_ajax(tab, keys){
+      tables[keys[0]] = tab[0]
+      tables[keys[1]] = tab[1]
+      
+       $.when(...getsub_data(tables["plate_wells"], ["sample_name"], "samples_overview")).done(function(){
+        tables['sampdata'] =  {}
+        console.log(arguments)
+        $.each(arguments, function(i,o){
+          if(o.length>0){
+            tables['sampdata'][o[0]["sample_name"]] = o[0]
+          }
+          
+        })
+        $(".loader").hide()
+        loadPage()
+        })
+    }
+    function loadPage() {
+      $("#content").append("\
+      \
+      <div class=container>\
+        <div class = row id = heading>\
+\
+       </div>\
+      </div>\
+    ")
+      $("#heading").append("\
+      <div class=col-md-6>\
+        <h2>Plate: " + tables['plate_info'][0]['plate_id'] + "</h2>\
+      </div>")
+      $("#heading").append("\
+      <div class=col-md-6>\
+        <h2>Assignee: " + tables['plate_info'][0]['Assignee'] + "</h2>\
+      </div>")
+
+      $("#heading").parent().css("padding-top", "25px")
+
+      $("#content").append("\
+      \
+      <table class='table table-striped table-hover' id='assigned_samps'>\
+          <thead><tr></tr><thead>\
+      </table>\
+    ")
+      $.each(tables['plate_wells'][0], function(key, obj){
+        $("#assigned_samps").children("thead").children("tr").append("<th>"+key+"</th>")
+      })
+
+      $("#assigned_samps").append("<tbody></tbody>")
+      var samp_list = Array()
+      var cont_list = Array()
+      $.each(tables['plate_wells'], function(idx, obj){
+        if (obj['well_row'] != "" ){
+          $("#assigned_samps").children("tbody").append("\
+          <tr>\
+            \
+          </tr>\
+          ")
+          if (obj["control"] == ""){
+            samp_list.push(obj['sample_name'])
+          } else {
+            cont_list.push(obj['sample_name'])
+          }
+          console.log(tables)
+          $.each(obj, function(key,val){
+            $("#assigned_samps").children("tbody").children("tr:last-child").append("\
+            <td>" + val + "</td>\
+            ")
+          })
+        }
+      var samp_dict = {}
+
+      console.log(tables)
+        
+        //console.log(obj)
+      }) 
+
+    }
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        return results[1] || 0;
+    }
+    function page_data(){
+        const plate = $.urlParam("plate_id")
+        var page = "plate_report"
+        var datas = {
+          plate_info: {table: 'plate_overview', args: JSON.stringify({plate_id: plate})}, 
+          plate_wells: {table: 'plate_wells', args: JSON.stringify({plate_id: plate})}
+        }
+        return datas
+    }
+    function sub_data(){
+      const plate = $.urlParam("plate_id")
+      var page = "plate_report"
+
+      var datas = {
+        sample_info: {table: 'plate_overview', args: JSON.stringify({plate_id: plate})}, 
+        plate_wells: {table: 'plate_wells', args: JSON.stringify({plate_id: plate})}
+      }
+      return datas
+    }
+
+    function getsub_data(from_dict, args, table){
+      return_dict = []
+      $.each(from_dict, function(i, v){
+        var arg_dict = {}
+        var arg_str = {}
+        arg_str[args] = from_dict[i][args]
+        
+        return_dict.push(getData({table: table, args: JSON.stringify(arg_str)}))
+      })
+      return(return_dict)
+    }
+
+     async function getData(myargs) {
+        return new Promise(function(resolve, reject) { 
+          $.ajax({
+            type: "GET", 
+            url: "/get_data", 
+            data: {table: myargs['table'], args: myargs['args']}, 
+            dataType: "json",
+            success: function(result) {
+                resolve(result)
+            },
+            error: function(error) {
+                reject(error);
+            }
+          })
+        })
+      }
+      function save(){
+            setInterval( function(){ 
+              $.ajax({
+                type: "POST", 
+                url: "/plate_organize", 
+                data: 'form.serializeArray()', 
+                success: function() {
+
+                }
+              })
+        }  , 5000 ); // in ms
+      }
+
+    
+</script>
+<style>
+
+.loader {
+  border: 26px solid #f3f3f3; /* Light grey */
+  border-top: 26px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 300px;
+  height: 300px;
+  position: absolute;
+  top: 50%;
+  left: 45%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+} 
+</style>
+
+<div class="loader"></div> 
+
+<div id = content>
+
+
+</div>
+
+
+{%endblock%}
