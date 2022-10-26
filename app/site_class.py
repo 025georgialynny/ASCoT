@@ -352,7 +352,7 @@ class table_functions(site_functions):
                 else:
                     dropdown_args[dd_key][key] = val[i]
             dropdowns.append("")
-            dropdowns[i], _ = self.get_table(cur_page, table, dropdown_args[dd_key], table_outline, dropdown_table)
+            dropdowns[i], _, _ = self.get_table(cur_page, table, dropdown_args[dd_key], table_outline, dropdown_table)
         return dropdowns, main_file
     def get_table(self, cur_page, table, args, table_outline, dropdown_table = ""):
         table_dict = {}

@@ -8,6 +8,7 @@
 
 A Graphical Software Interface for Management of Confirmatory Sequencing in Genomic Medicine. ASCoT is a standalone and containerized cross-platform software package for sample management particularly tailored for user-friendliness.
 
+Examples of usage can be seen in the /screenshots folder 
 
 
 
@@ -25,10 +26,10 @@ A Graphical Software Interface for Management of Confirmatory Sequencing in Geno
 
 ASCoT is a web application built on python3 flask. An installation file is created for debian distributions in file `install.sh` using `apt`. Super-User privileges are required. Prior install of python3 is required. 
 
-This was built using a debian [Docker Dev Environment](https://docs.docker.com/desktop/dev-environments/).  
+This was built and developed using a debian [Docker Dev Environment](https://docs.docker.com/desktop/dev-environments/) on a M1 Macbook Air with 16GB of RAM.  
 
 ```bash
-  sudo bash install.sh
+  ./install.sh
 ```
     
 The installation file installs pip3, MySQL, and all dependencies. It also creates database `flaskdb` with user/password `ascot/asco`. These credentials can be changed in `install.sh`, note that they must be changed in `app/__init__.py` as well. 
@@ -69,6 +70,7 @@ Access on browser at https://localhost:5000. Note the default login (username/pw
 ├── make_exe.sh - Create Executable from PyInstaller
 ├── mysql_install.sh - Install MySql and Initialize DB
 ├── requirements.txt - Python Requirements List
+├── run.py - file that choose ip to run on and runs app
 ├── app - Main Application File 
 │   ├── __init__.py - Application Init File
 │   ├── build_data.py - Setup Data based on original data file (app/data/samples/sample_version/sample_data.csv)
