@@ -10,7 +10,7 @@ from random import sample
 
 from app import app
 from app import *
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, make_response
 from flask_bootstrap import Bootstrap
 import secrets
 from flask_principal import Principal
@@ -515,3 +515,43 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+
+@app.route('/upload_primer', methods=["POST"])
+@login_required
+def upload_primer():
+    csv_file = request.files['csvFile']
+    # Process the uploaded CSV file and column mapping data
+    # ...
+    column_mapping = request.form
+
+    uploaded_dataframe = pd.read_csv(csv_file)
+
+    for key, value in column_mapping.items():
+        if key.startswith('column') and value != '':
+            column_number = int(key.replace('column', ''))
+            print(column_number)
+            column_name = value
+            uploaded_dataframe.columns.values[column_number-1] = column_name
+
+    upload = mysite.import_primers(uploaded_dataframe)
+    if upload > 0:
+        now = datetime.datetime.now()
+        uploaded_dataframe.to_csv(os.path.join(os.path.abspath("."), "app", "data", "uploaded", f"primer_list{now}.csv"))
+    else:
+        flash("Upload Failed")
+    print(uploaded_dataframe)
+    print(request.form)
+    return 'CSV uploaded and processed successfully.'
+
+
+
+@app.route('/delete_primer/<to_delete>', methods=["POST"])
+@login_required
+def delete_primer(to_delete):
+    print(request.args)
+    print(to_delete)
+    del_status = mysite.delete_primer(to_delete)
+    if del_status>0:
+        return make_response("Success", 200)
+    else: 
+        return make_response("Failed", 404)

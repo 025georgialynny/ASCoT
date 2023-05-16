@@ -151,6 +151,16 @@ class site:
             new_row = {"sample_name": sample_id, "plate_id": plate_id, "well_row": row, "well_column": col}
             self.add_row("plate_wells", new_row)
         self.load_data()
+    def delete_primer(self, primer_num):
+        try:
+            self.primer_list = self.primer_list.drop(self.primer_list[self.primer_list['primer_num'] == primer_num].index)
+            print(self.primer_list.head())
+            self.load_data()
+            return 1
+        except  Exception as e:
+            print(e)
+            return -1
+
     def savePrimer(self, primerform):
         primer_num1 = max(self.primer_list.primer_num.str.replace(r'\D', '').astype(int))+1
         primer_num2 = primer_num1+1 
@@ -202,6 +212,7 @@ class site:
     def remove_sample(self, sample_name, plate_id): 
         self.plate_wells = self.plate_wells[[not thing for thing in (self.plate_wells.sample_name == sample_name)&(self.plate_wells.plate_id == plate_id)]].reset_index(drop=True)
         self.load_data()
+
     def add_row(self, file, datadictionary):
         file_dict = self.database_outline['table_mapping'][self.get_key_from_value(self.database_outline['tables'], file)]
         return_dict = { "files_keys": list(file_dict['variables'].keys()),
@@ -220,6 +231,18 @@ class site:
         exec("self." + file + ".to_csv(os.path.join(self.basedir, 'data', 'samples', '" +self.current_sample_version + "', '" + file + ".csv') , index = False)", globals(), locals())
         self.load_data()
         return 1
+    def import_primers(self, new_data):
+        for idx, row in  new_data.iterrows():
+            primer_num1 = max(self.primer_list.primer_num.str.replace(r'\D', '').astype(int))+1
+            row = row.to_dict()
+            row['primer_num'] =primer_num1
+            ret = self.add_row("primer_list", row)
+            if ret != 1:
+                return -1
+
+        return 1
+
+
 
 
 class site_functions(site):

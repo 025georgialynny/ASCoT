@@ -117,10 +117,26 @@ class button_link:
             html_output = "<a href=" + self.href + " class = \"btn btn-primary " + self.html_class + "\">"+self.text+"</a>"
         return html_output
 
+class button:
+    def __init__(self,  text, html_class = "", item_id = "", other_args = {}, setval = "", custom_id = ""):
+        self.text = text 
+        self.html_class = html_class
+        self.item_id = item_id if custom_id == "" else custom_id
+        self.other_args = other_args
+        self.html = self.build_html()
+    def build_html(self):
+        if self.item_id != "":
+            html_output = f"<button class = \"btn btn-primary\" id = \"{self.item_id}\">{self.text}</button>"
+        else:
+            html_output = "<button class = \"btn btn-primary \">"+self.text+"</button>"
+        print(html_output)
+        return html_output
+        
+
 class textarea_list:
-    def __init__(self, item_id, html_class = "", rows = "3", other_args = {}, setval = "", content = ""):
+    def __init__(self, item_id, html_class = "", rows = "3", other_args = {}, setval = "", content = "", custom_id = ""):
         self.content = eval(content)
-        self.item_id = item_id
+        self.item_id = item_id if custom_id == "" else custom_id
         self.html_class = html_class
         self.rows = rows if type(rows) == str else str(rows)
         self.other_args = other_args
@@ -142,7 +158,7 @@ class table_items:
     def __init__(self, table_id, column_names=''):
         self.table_id = table_id.replace(" ", "_").lower()
         self.column_names = column_names
-        self.item_types = ["select_dropdown", "select_item", "textarea", "basic_input", "link", "button_link", "textarea_list"]
+        self.item_types = ["button", "select_dropdown", "select_item", "textarea", "basic_input", "link", "button_link", "textarea_list"]
         self.page_items = {}
         for cname in self.column_names:
             self.page_items[cname] = {}
@@ -175,6 +191,7 @@ class table_items:
             exec_string = "self.page_items['"+col+"'][id]  = " + exec_string + ")"
             if col not in self.page_items.keys():
                 self.page_items[col] = {}
+            print(exec_string)
             exec(exec_string, globals(), locals())
         else: 
             print(item_type + " not in " + str(self.item_types))
@@ -211,6 +228,8 @@ class table_items:
         if selected == "":
             id = self.make_item(item_type, col, row, args, custom_id, "{}", setval, content)
         else: 
+            if 'custom_id' in args:
+                custom_id = args['custom_id']
             id = self.make_item(item_type, col, row, args, custom_id, "{}", setval, content, selected)
 
         return self.page_items[col][id].html

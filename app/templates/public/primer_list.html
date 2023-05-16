@@ -51,9 +51,33 @@
     {% endif %}
 {% endfor %}
 <br>
-<button class="btn btn-lg btn-primary btn-block" type="submit">Add Primer</button>
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Add Primer</button>
   </form>
 </div>
+
+
+
+<!-- Popup container -->
+<div id="popupContainer"  class = "popup center" style="display: none;">
+  <h2>Upload CSV</h2>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="csvFile" accept=".csv" required>
+    <br><br>
+    <table id="columnMappingTable">
+      <thead>
+        <tr>
+          <th>CSV Labels</th>
+          <th>Select Column</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <br>
+    <button type="submit">Submit</button>
+  </form>
+</div>
+
 
 <div class="container-fluid">
     {%set data = bigdata["tables"]%}
@@ -67,7 +91,10 @@
         <h2>{{bigdata["titles"][item]}}</h2>
         <input type= "text" id = "filter_searchbar_{{item_url}}" class = "formcontrol filter_searchbar {{item_url}}" placeholder = "Filter Values Here"  >
         
+
         <button id = "newprimer" class="btn btn-primary mb-2">Add New Primer</button>
+
+        <button id="uploadButton" class="btn btn-primary mb-2" >Upload CSV</button>
         <div class="table-responsive">
         <div class = "tableScroll">
           <form action = "/submit_table?table={{item}}&page={{page}}", method = "POST">
@@ -280,5 +307,8 @@
         </div>
     {% endfor %}
 </div>
+
+
+
 
 {%endblock%}

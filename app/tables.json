@@ -782,8 +782,15 @@
                 "unique": "True",
                 "args": {
                 }
+            },
+            "delete_primer": {
+                "pretty_name": "delete_primer",
+                "storage_file": "none",
+                "type": "editable",
+                "unique": "True",
+                "args": {
+                }
             }
-
             
         },
         "dropdown": {}

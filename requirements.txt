@@ -39,7 +39,6 @@ pycairo==1.21.0
 pycparser==2.21
 pycrypto==2.6.1
 Pygments==2.7.1
-PyGObject==3.42.2
 pyinstaller==5.0.1
 pyinstaller-hooks-contrib==2022.4
 PyMySQL==1.0.2

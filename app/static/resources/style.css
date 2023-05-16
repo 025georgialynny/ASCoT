@@ -2,3 +2,12 @@ body {
     -webkit-print-color-adjust: exact;
     color-adjust: exact;
 }
+
+
+.deleted_primer{
+        pointer-events: none;
+        text-decoration: line-through;
+        opacity: .4;
+        background: gray !important;      
+      
+}

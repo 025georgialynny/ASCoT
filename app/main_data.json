@@ -168,6 +168,18 @@
       }
     }
   },
+
+  "delete_primer": {
+    "pretty_name": "Delete Primer",
+    "required_vars": {},
+    "item": {
+      "type": "button",
+      "args": {
+        "text": "Delete Primer",
+        "custom_id": "primer_delete"
+      }
+    }
+  },
   "plate_id": {
     "prettyname": "Plate ID",
     "required_vars": {},
